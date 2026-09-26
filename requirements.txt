@@ -1,0 +1,27 @@
+# Core runtime. Pinned to a minor version so that a cohort member's machine and
+# the deployed service resolve the same code.
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.32,<1.0
+pydantic>=2.9,<3.0
+numpy>=1.26,<3.0
+
+# Embeddings. Needed for the neural embedder only; the system runs without them,
+# in the documented lexical_fallback mode, which is what CI exercises.
+#
+# Listed honestly rather than aspirationally: this is
+# sentence-transformers, which brings PyTorch with it. An ONNX Runtime path was
+# designed for and specified in the plan, and it is the better dependency for a
+# CPU-only free-tier deployment — roughly 50 MB of runtime against roughly 2 GB,
+# and no risk of a CUDA build being pulled in by a transitive dependency. It is
+# not implemented. See docs/known-limitations.md, which records the gap rather
+# than leaving the dependency list claiming a design the code does not have.
+sentence-transformers>=3.3
+
+# Optional. Set CRA_LLM_PROVIDER and CRA_LLM_API_KEY to enable model-written
+# answers. The product is fully functional without it, which is why it is not a
+# hard requirement of the deployment.
+httpx>=0.27,<1.0
+
+# No test framework. The suite is written against unittest from the standard
+# library so that it runs on a fresh machine with no install step, which matters
+# when a cohort has one afternoon and a laptop.

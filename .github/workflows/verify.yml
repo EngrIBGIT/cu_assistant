@@ -1,0 +1,92 @@
+name: verify
+
+# The project's integrity claim is that the evaluation sets predate the
+# implementation. That claim is only worth something if something checks it
+# automatically, so this workflow does exactly that and refuses to pass if it
+# ever stops being true.
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: integrity, tests, evaluation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The integrity check reads commit timestamps, so it needs full history.
+          # A shallow clone would report the eval sets as new and the check
+          # would silently pass for the wrong reason.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check the evaluation sets predate the implementation
+        run: python scripts/verify_integrity.py
+
+      - name: Run the test suite
+        # The lexical embedder is forced so the suite runs without downloading a
+        # 90 MB model on every push. A neural-only assertion would be skipped
+        # rather than failed, which is the correct trade for CI: a suite that
+        # fails for want of a model download gets abandoned rather than fixed.
+        env:
+          CRA_EMBEDDER: lexical
+        run: python -m unittest discover -s tests -t . -v
+
+      - name: Run the frozen evaluation, lexical configuration
+        env:
+          CRA_EMBEDDER: lexical
+        run: python scripts/run_eval.py --embedder lexical
+
+      - name: Run the frozen evaluation, neural configuration
+        # This is the configuration the results in the README were measured in.
+        # It downloads the model once per run; caching is not worth the
+        # complexity for a repository this size.
+        run: python scripts/run_eval.py
+
+      - name: Run the keyword-only baseline
+        # Run every time, deliberately. An evaluation that never compares
+        # against a simpler alternative is a demonstration, not a measurement,
+        # and the point of this step is that the comparison is in the record
+        # even on the days nobody asks for it.
+        run: python scripts/run_eval.py --baseline-only
+
+      - name: Check no source file was modified by the run
+        # Results files are expected to be rewritten: every run stamps a fresh
+        # timestamp, embedder name, and model identifier, which is what makes a
+        # result reproducible. Everything else must be untouched, so a test that
+        # quietly edited the corpus or the routing table to make itself pass
+        # would fail here rather than being committed unnoticed.
+        run: |
+          changed=$(git status --porcelain -- . ':(exclude)eval/results*.json')
+          if [ -n "$changed" ]; then
+            echo "::error::the run modified tracked files outside eval/results*.json:"
+            echo "$changed"
+            git --no-pager diff -- . ':(exclude)eval/results*.json'
+            exit 1
+          fi
+          echo "no source file was modified; results files are expected to change"
+
+      - name: Upload results as build artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evaluation-results
+          path: eval/results*.json
+          retention-days: 90
