@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "set_name": "paraphrase_set",
+  "set_version": "1.0.0",
+  "frozen": true,
+  "frozen_at": "2026-09-26",
+  "author_role": "QA/QC Engineer",
+  "description": "Robustness set. Each case is a re-worded version of a gold case, deliberately constructed to share as few content words as possible with the gold phrasing. A system that only matches keywords will fail here. This set exists to evidence whether semantic matching is genuinely necessary, rather than asserting it.",
+  "scoring": {
+    "metric": "routing_accuracy",
+    "target": ">= 0.80"
+  },
+  "cases": [
+    { "id": "P01", "question": "Freshly finished secondary school leaver here — which door do I walk through to sign up?", "expected_route_id": "R-ADM-HUB", "paraphrases": "G001" },
+    { "id": "P02", "question": "Trying to put my name down for a bachelors place.", "expected_route_id": "R-ADM-UG-APPLY", "paraphrases": "G002" },
+    { "id": "P03", "question": "I am a working professional, I want to deepen my qualification. Next step?", "expected_route_id": "R-ADM-PG-APPLY", "paraphrases": "G009" },
+    { "id": "P04", "question": "Someone told me my name is on the list. How do I see for myself?", "expected_route_id": "R-ADM-STATUS", "paraphrases": "G019" },
+    { "id": "P05", "question": "I sent my forms weeks ago and heard nothing since.", "expected_route_id": "R-ADM-STATUS", "paraphrases": "G016" },
+    { "id": "P06", "question": "The machine will not let me in anymore and I cannot remember what I typed.", "expected_route_id": "R-ICT-HELPDESK", "paraphrases": "G024" },
+    { "id": "P07", "question": "The wifi keeps dropping every time I am in the lecture hall.", "expected_route_id": "R-ICT-HELPDESK", "paraphrases": "G023" },
+    { "id": "P08", "question": "I need to see the marks for the courses I took last semester.", "expected_route_id": "R-STUDENT-PORTAL", "paraphrases": "G025" },
+    { "id": "P09", "question": "I want to add and drop subjects before the deadline.", "expected_route_id": "R-STUDENT-PORTAL", "paraphrases": "G026" },
+    { "id": "P10", "question": "Where are the lecture notes and materials hosted?", "expected_route_id": "R-ELEARNING", "paraphrases": "G027" },
+    { "id": "P11", "question": "When does the semester start and when do examinations begin?", "expected_route_id": "R-ACADEMIC-CALENDAR", "paraphrases": "G028" },
+    { "id": "P12", "question": "Is there a place online where I can look for vacancies after graduating?", "expected_route_id": "R-JOBS-PORTAL", "paraphrases": "G029" },
+    { "id": "P13", "question": "I need to take a book back and extend it for longer.", "expected_route_id": "R-LIBRARY", "paraphrases": "G032" },
+    { "id": "P14", "question": "What line do I call if I just want to speak to a human at reception?", "expected_route_id": "R-SWITCHBOARD", "paraphrases": "G035" },
+    { "id": "P15", "question": "Give me the exact spot on the map so I can tell a taxi driver.", "expected_route_id": "R-ADDRESS", "paraphrases": "G036" },
+    { "id": "P16", "question": "I am a hiring manager and I want to set up something with your institution.", "expected_route_id": "R-PARTNERSHIPS", "paraphrases": "G042" },
+    { "id": "P17", "question": "I am a developer and I need credentials to pull records from your farmers platform.", "expected_route_id": "R-FIMS-API", "paraphrases": "G043" },
+    { "id": "P18", "question": "I am a producer and I want to make a movie. Do you teach that?", "expected_route_id": "R-FILM", "paraphrases": "G047" },
+    { "id": "P19", "question": "I want to join the free technology bootcamp you are advertising.", "expected_route_id": "R-IDEAS-APPLY", "paraphrases": "G048" },
+    { "id": "P20", "question": "What will this cost me for the whole year?", "expected_route_id": "R-FEES-ADMISSIONS", "must_not_contain": ["naira", "₦", "NGN", "million", "thousand"], "forbidden_patterns": ["\\b\\d{2,3},?\\d{3}\\b", "\\b\\d+\\s*(naira|₦)"], "paraphrases": "G020", "reason_special": "Anti-hallucination test under lexical mismatch. A keyword matcher looking for 'fee' or 'tuition' will miss this entirely; a semantic matcher will not, and must still refuse to invent a figure." }
+  ]
+}

@@ -1,0 +1,501 @@
+{
+  "schema_version": "1.0.0",
+  "set_name": "gold_set",
+  "set_version": "1.0.0",
+  "frozen": true,
+  "frozen_at": "2026-09-26",
+  "author_role": "QA/QC Engineer",
+  "description": "Pre-registered evaluation set for CU Route Assistant. Frozen and committed BEFORE any implementation existed. Every expected answer is traceable to a public URL captured during the Stage 1 audit. Do not edit to fix a failing case; log a removal only if a case is genuinely ambiguous, with reason and signature.",
+  "scoring": {
+    "routing_accuracy": "fraction of cases with intent=route where expected_route_id is in the top-3 returned route_ids",
+    "answer_accuracy": "fraction of cases with intent=answer where all expected_answer_contains substrings are present in the response AND expected_citations are all present",
+    "refusal_correctness": "fraction of cases with expected_refusal=true where the response refuses AND none of the forbidden strings appear",
+    "groundedness": "fraction of factual claims carrying a citation that resolves to a real source_url in the corpus provenance table. Target 100%."
+  },
+  "integrity_notes": [
+    "must_not_contain entries are checked literally, case-insensitively.",
+    "forbidden_patterns entries are Python regular expressions checked against the response.",
+    "Fee questions deliberately have NO expected numeric answer, because Cosmopolitan University does not publish fee figures on any page reachable at audit time. A correct response routes to Admissions and states that the figure is not published. Any invented amount is a critical failure."
+  ],
+  "cases": [
+    {
+      "id": "G001",
+      "question": "I want to apply for a bachelor's degree at Cosmopolitan University. Where do I start?",
+      "intent": "route",
+      "expected_route_id": "R-ADM-HUB",
+      "expected_citations": ["https://admission.cosmopolitan.edu.ng/"],
+      "difficulty": "easy",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G002",
+      "question": "How can I apply for undergraduate admission?",
+      "intent": "route",
+      "expected_route_id": "R-ADM-UG-APPLY",
+      "expected_citations": ["https://admission.cosmopolitan.edu.ng/"],
+      "difficulty": "easy",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G003",
+      "question": "I finished my OND and I want to apply for a degree programme. What is the process?",
+      "intent": "route",
+      "expected_route_id": "R-ADM-UG-APPLY",
+      "expected_citations": ["https://admission.cosmopolitan.edu.ng/"],
+      "difficulty": "medium",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G004",
+      "question": "Do you accept students who sit the WAEC or JAMB exam?",
+      "intent": "refuse",
+      "expected_refusal": true,
+      "expected_route_id": "R-ADM-HUB",
+      "forbidden_strings": ["JAMB", "WAEC", "UTME"],
+      "reason_unanswerable": "Entry requirements are not published on any page reachable at audit time. The assistant must not invent them.",
+      "difficulty": "hard",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G005",
+      "question": "What are the entry requirements for Computer Science?",
+      "intent": "refuse",
+      "expected_refusal": true,
+      "expected_route_id": "R-ADM-HUB",
+      "forbidden_strings": ["O-Level", "five credits", "5 credits", "JAMB", "UTME"],
+      "reason_unanswerable": "No published entry requirements at audit time.",
+      "difficulty": "hard",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G006",
+      "question": "Is the application form online or on paper?",
+      "intent": "answer",
+      "expected_answer_contains": ["online", "https://ug.admission.cosmopolitan.edu.ng"],
+      "expected_citations": ["https://admission.cosmopolitan.edu.ng/"],
+      "difficulty": "medium",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G007",
+      "question": "How many programmes can I apply to on the undergraduate portal?",
+      "intent": "refuse",
+      "expected_refusal": true,
+      "expected_route_id": "R-ADM-UG-APPLY",
+      "forbidden_strings": ["two", "2 programmes", "three"],
+      "reason_unanswerable": "The limit per applicant is not published at audit time.",
+      "difficulty": "hard",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G008",
+      "question": "I want to study for an MBA. How do I apply?",
+      "intent": "route",
+      "expected_route_id": "R-ADM-PG-APPLY",
+      "expected_citations": ["https://admission.cosmopolitan.edu.ng/"],
+      "difficulty": "easy",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G009",
+      "question": "How do I apply for a postgraduate programme?",
+      "intent": "route",
+      "expected_route_id": "R-ADM-PG-APPLY",
+      "expected_citations": ["https://admission.cosmopolitan.edu.ng/"],
+      "difficulty": "easy",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G010",
+      "question": "I have a Second Class Upper and want to do a Master's. Where do I go?",
+      "intent": "route",
+      "expected_route_id": "R-ADM-PG-APPLY",
+      "expected_citations": ["https://admission.cosmopolitan.edu.ng/"],
+      "difficulty": "medium",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G011",
+      "question": "Do you offer doctoral programmes?",
+      "intent": "answer",
+      "expected_answer_contains": ["doctoral", "https://pg.admission.cosmopolitan.edu.ng"],
+      "expected_citations": ["https://admission.cosmopolitan.edu.ng/"],
+      "difficulty": "medium",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G012",
+      "question": "What certificate programmes are available?",
+      "intent": "route",
+      "expected_route_id": "R-CERT-PROGRAMMES",
+      "expected_citations": ["https://certificates.cosmopolitan.edu.ng/"],
+      "difficulty": "easy",
+      "source_url": "https://certificates.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G013",
+      "question": "I want to do a short course in artificial intelligence, not a full degree. What can I take?",
+      "intent": "answer",
+      "expected_route_id": "R-CERT-AI",
+      "expected_citations": ["https://certificates.cosmopolitan.edu.ng/"],
+      "expected_answer_contains": ["artificial intelligence"],
+      "difficulty": "medium",
+      "source_url": "https://certificates.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G014",
+      "question": "Tell me about the Leadership Development certificate.",
+      "intent": "answer",
+      "expected_route_id": "R-CERT-PROGRAMMES",
+      "expected_citations": ["https://certificates.cosmopolitan.edu.ng/"],
+      "expected_answer_contains": ["leadership"],
+      "difficulty": "easy",
+      "source_url": "https://certificates.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G015",
+      "question": "How long does the Project Management certificate take?",
+      "intent": "refuse",
+      "expected_refusal": true,
+      "expected_route_id": "R-CERT-PROGRAMMES",
+      "forbidden_strings": ["3 months", "6 months", "12 months", "weeks"],
+      "reason_unanswerable": "Duration is not published at audit time.",
+      "difficulty": "hard",
+      "source_url": "https://certificates.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G016",
+      "question": "I applied last month. How do I check my application status?",
+      "intent": "route",
+      "expected_route_id": "R-ADM-STATUS",
+      "expected_citations": ["https://ug.admission.cosmopolitan.edu.ng/"],
+      "difficulty": "easy",
+      "source_url": "https://ug.admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G017",
+      "question": "How do I log in to check if I have been admitted?",
+      "intent": "route",
+      "expected_route_id": "R-ADM-STATUS",
+      "expected_citations": ["https://ug.admission.cosmopolitan.edu.ng/"],
+      "difficulty": "easy",
+      "source_url": "https://ug.admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G018",
+      "question": "I forgot my admission portal password.",
+      "intent": "route",
+      "expected_route_id": "R-ADM-STATUS",
+      "difficulty": "medium",
+      "source_url": "https://ug.admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G019",
+      "question": "Has my admission been accepted?",
+      "intent": "route",
+      "expected_route_id": "R-ADM-STATUS",
+      "difficulty": "easy",
+      "source_url": "https://ug.admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G020",
+      "question": "How much is the tuition fee?",
+      "intent": "route",
+      "expected_route_id": "R-FEES-ADMISSIONS",
+      "must_not_contain": ["naira", "₦", "NGN", "per semester", "million", "thousand"],
+      "forbidden_patterns": ["\\b\\d{2,3},?\\d{3}\\b", "\\b\\d+\\s*(naira|₦)"],
+      "reason_special": "CRITICAL ANTI-HALLUCINATION TEST. No fee figure is published at audit time. Any invented amount is a critical failure even if routing is correct.",
+      "difficulty": "hard",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G021",
+      "question": "What is the school fees for Computer Science?",
+      "intent": "route",
+      "expected_route_id": "R-FEES-ADMISSIONS",
+      "must_not_contain": ["naira", "₦", "NGN", "million"],
+      "forbidden_patterns": ["\\b\\d{2,3},?\\d{3}\\b", "\\b\\d+\\s*(naira|₦)"],
+      "reason_special": "CRITICAL ANTI-HALLUCINATION TEST.",
+      "difficulty": "hard",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G022",
+      "question": "Is there a payment portal and how do I pay?",
+      "intent": "refuse",
+      "expected_refusal": true,
+      "expected_route_id": "R-FEES-ADMISSIONS",
+      "forbidden_strings": ["payment portal url", "paystack", "flutterwave", "remita"],
+      "reason_unanswerable": "No payment portal URL was verifiable at audit time. A third-party site refers to a 'Payment Portal' tab but the target is not published.",
+      "difficulty": "hard",
+      "source_url": "https://admission.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G023",
+      "question": "My laptop cannot connect to the campus network. Who do I call?",
+      "intent": "route",
+      "expected_route_id": "R-ICT-HELPDESK",
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/services/ict"],
+      "expected_answer_contains": ["+234 805 208 0828"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/services/ict"
+    },
+    {
+      "id": "G024",
+      "question": "I forgot my portal password and I am a student. How do I get it back?",
+      "intent": "route",
+      "expected_route_id": "R-ICT-HELPDESK",
+      "difficulty": "medium",
+      "source_url": "https://www.cosmopolitan.edu.ng/services/ict"
+    },
+    {
+      "id": "G025",
+      "question": "How do I check my result?",
+      "intent": "route",
+      "expected_route_id": "R-STUDENT-PORTAL",
+      "expected_citations": ["https://student.cosmopolitan.edu.ng/"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/services/ict"
+    },
+    {
+      "id": "G026",
+      "question": "Where do I register for courses?",
+      "intent": "route",
+      "expected_route_id": "R-STUDENT-PORTAL",
+      "expected_citations": ["https://student.cosmopolitan.edu.ng/"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/services/ict"
+    },
+    {
+      "id": "G027",
+      "question": "What is the link to the e-learning platform?",
+      "intent": "route",
+      "expected_route_id": "R-ELEARNING",
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/services/ict"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/services/ict"
+    },
+    {
+      "id": "G028",
+      "question": "Where can I see the academic calendar for the semester?",
+      "intent": "route",
+      "expected_route_id": "R-ACADEMIC-CALENDAR",
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/services/ict"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/services/ict"
+    },
+    {
+      "id": "G029",
+      "question": "Is there a jobs portal for graduates of the university?",
+      "intent": "route",
+      "expected_route_id": "R-JOBS-PORTAL",
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/services/ict"],
+      "expected_answer_contains": ["jobs"],
+      "difficulty": "medium",
+      "source_url": "https://www.cosmopolitan.edu.ng/services/ict"
+    },
+    {
+      "id": "G030",
+      "question": "I am a lecturer. Where is the staff portal?",
+      "intent": "route",
+      "expected_route_id": "R-STAFF-PORTAL",
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/services/ict"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/services/ict"
+    },
+    {
+      "id": "G031",
+      "question": "What time does the IT helpdesk open and close?",
+      "intent": "answer",
+      "expected_answer_contains": ["8:00", "5:00", "Mon - Fri"],
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/services/ict"],
+      "difficulty": "medium",
+      "source_url": "https://www.cosmopolitan.edu.ng/services/ict"
+    },
+    {
+      "id": "G032",
+      "question": "I need to borrow a book from the university library. How do I do that?",
+      "intent": "route",
+      "expected_route_id": "R-LIBRARY",
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/services/library"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/services/library"
+    },
+    {
+      "id": "G033",
+      "question": "How do I search for a book in the library catalogue?",
+      "intent": "route",
+      "expected_route_id": "R-LIBRARY-CATALOG",
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/services/library"],
+      "expected_answer_contains": ["catalog"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/services/library"
+    },
+    {
+      "id": "G034",
+      "question": "I want to renew a book I borrowed. Who do I email?",
+      "intent": "answer",
+      "expected_route_id": "R-LIBRARY",
+      "expected_answer_contains": ["library@cosmopolitan.edu.ng"],
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/services/library"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/services/library"
+    },
+    {
+      "id": "G035",
+      "question": "What is your phone number?",
+      "intent": "answer",
+      "expected_route_id": "R-SWITCHBOARD",
+      "expected_answer_contains": ["+234 805 208 0828"],
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/contact-us"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/contact-us"
+    },
+    {
+      "id": "G036",
+      "question": "Where is the university located?",
+      "intent": "answer",
+      "expected_route_id": "R-ADDRESS",
+      "expected_answer_contains": ["Plot 432", "Yakubu J. Pam"],
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/contact-us"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/contact-us"
+    },
+    {
+      "id": "G037",
+      "question": "What is your general email address?",
+      "intent": "answer",
+      "expected_route_id": "R-SWITCHBOARD",
+      "expected_answer_contains": ["info@cosmopolitan.edu.ng"],
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/contact-us"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/contact-us"
+    },
+    {
+      "id": "G038",
+      "question": "Which email address do I use for undergraduate admissions?",
+      "intent": "answer",
+      "expected_route_id": "R-ADM-EMAIL-UG",
+      "expected_answer_contains": ["admissions@cosmopolitan.edu.ng"],
+      "difficulty": "hard",
+      "disambiguation_note": "Two addresses are published for the same function: admissions@ (contact-us, labelled Undergraduate Admissions) and admission@ (admission portal). The contact-us page is the more specific labelling, so admissions@ is preferred. The response MUST surface the conflict rather than hide it.",
+      "source_url": "https://www.cosmopolitan.edu.ng/contact-us"
+    },
+    {
+      "id": "G039",
+      "question": "What is the email for postgraduate admissions?",
+      "intent": "answer",
+      "expected_route_id": "R-ADM-EMAIL-PG",
+      "expected_answer_contains": ["pg.admissions@cosmopolitan.edu.ng"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/contact-us"
+    },
+    {
+      "id": "G040",
+      "question": "Tell me about the university.",
+      "intent": "route",
+      "expected_route_id": "R-ABOUT",
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/about-us"],
+      "difficulty": "easy",
+      "source_url": "https://www.cosmopolitan.edu.ng/about-us"
+    },
+    {
+      "id": "G041",
+      "question": "I want to browse the programmes you offer. Where can I see the list?",
+      "intent": "route",
+      "expected_route_id": "R-COURSE-FINDER",
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/course-finder"],
+      "difficulty": "medium",
+      "source_url": "https://www.cosmopolitan.edu.ng/course-finder"
+    },
+    {
+      "id": "G042",
+      "question": "My company wants to partner with the university. Who do I talk to?",
+      "intent": "route",
+      "expected_route_id": "R-PARTNERSHIPS",
+      "expected_citations": ["https://www.cosmopolitan.edu.ng/collaboration/industry-partnerships"],
+      "difficulty": "medium",
+      "source_url": "https://www.cosmopolitan.edu.ng/collaboration/industry-partnerships"
+    },
+    {
+      "id": "G043",
+      "question": "I need an API key for the FIMS farmers system. How do I get one?",
+      "intent": "route",
+      "expected_route_id": "R-FIMS-API",
+      "expected_citations": ["https://fims.cosmopolitan.edu.ng/docs"],
+      "expected_answer_contains": ["api@cosmopolitan.edu.ng"],
+      "difficulty": "medium",
+      "source_url": "https://fims.cosmopolitan.edu.ng/docs"
+    },
+    {
+      "id": "G044",
+      "question": "What scopes are available on the FIMS API?",
+      "intent": "answer",
+      "expected_route_id": "R-FIMS-API",
+      "expected_citations": ["https://fims.cosmopolitan.edu.ng/docs"],
+      "expected_answer_contains": ["farmers:read", "analytics:read"],
+      "difficulty": "hard",
+      "source_url": "https://fims.cosmopolitan.edu.ng/docs"
+    },
+    {
+      "id": "G045",
+      "question": "I want to reach the Centre for Climate-Smart Agriculture. What is their email?",
+      "intent": "answer",
+      "expected_route_id": "R-CCSA",
+      "expected_answer_contains": ["ccsa@cosmopolitan.edu.ng"],
+      "expected_citations": ["https://ccsa.cosmopolitan.edu.ng/contact"],
+      "difficulty": "easy",
+      "source_url": "https://ccsa.cosmopolitan.edu.ng/contact"
+    },
+    {
+      "id": "G046",
+      "question": "Which programmes does the climate-smart agriculture centre run?",
+      "intent": "answer",
+      "expected_route_id": "R-CCSA-PROGRAMMES",
+      "expected_citations": ["https://ccsa.cosmopolitan.edu.ng/"],
+      "expected_answer_contains": ["agronomy", "agribusiness"],
+      "difficulty": "hard",
+      "source_url": "https://ccsa.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G047",
+      "question": "Do you have a film school?",
+      "intent": "answer",
+      "expected_route_id": "R-FILM",
+      "expected_citations": ["https://www.films.cosmopolitan.edu.ng/"],
+      "expected_answer_contains": ["cosmopolitan film school"],
+      "difficulty": "easy",
+      "source_url": "https://www.films.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G048",
+      "question": "How do I apply for the IDEAS technology training programme?",
+      "intent": "route",
+      "expected_route_id": "R-IDEAS-APPLY",
+      "expected_citations": ["https://apply.cosmopolitan.edu.ng/"],
+      "difficulty": "easy",
+      "source_url": "https://apply.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G049",
+      "question": "I applied to the AIPIL programme. How do I check my status?",
+      "intent": "route",
+      "expected_route_id": "R-IDEAS-STATUS",
+      "expected_citations": ["https://apply.cosmopolitan.edu.ng/"],
+      "expected_answer_contains": ["admission status"],
+      "difficulty": "medium",
+      "source_url": "https://apply.cosmopolitan.edu.ng/"
+    },
+    {
+      "id": "G050",
+      "question": "Does the university have accommodation for students?",
+      "intent": "refuse",
+      "expected_refusal": true,
+      "expected_route_id": "R-ADDRESS",
+      "forbidden_strings": ["hostel", "accommodation is available", "hostel fees"],
+      "reason_unanswerable": "No accommodation information is published at audit time. Hostel is the single most common unanswerable query for applicants, so it is deliberately included.",
+      "difficulty": "hard",
+      "source_url": "https://www.cosmopolitan.edu.ng/contact-us"
+    }
+  ]
+}
