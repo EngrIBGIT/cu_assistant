@@ -308,11 +308,17 @@ publishes it inconsistently.
 hours where published, a `source_url` the row was compiled from, and a
 `verification` field:
 
-| Value | Meaning |
-|---|---|
-| `published` | The University publishes this and it is consistent |
-| `published_conflicting` | The University publishes more than one value, and the row carries both |
-| `unverified` | Compiled from public evidence; no client data owner has confirmed it |
+| Value | Meaning | Rows |
+|---|---|---|
+| `published` | The University publishes this and it is consistent | 20 |
+| `published_conflicting` | The University publishes more than one value, and the row carries both | 3 |
+| `derived` | Compiled by cross-referencing published routes; no single page states it | 6 |
+
+There is deliberately no `unverified` value. A destination that cannot be traced
+to a published source is left out of the table entirely rather than included with
+a caveat, because a user has no way to distinguish "we could not confirm this" from
+"we made this up", and the second reading is the correct one for anything we
+compiled ourselves. Six of the 29 rows are `derived` and say so in the response.
 
 Disclosed conflicts are not resolved silently. Where the University publishes two
 numbers, the response says so and tells the user to try the second if the first

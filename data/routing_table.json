@@ -1,9 +1,10 @@
 {
   "schema_version": "1.0.0",
-  "routing_table_version": "1.0.0",
+  "routing_table_version": "1.1.0",
   "compiled_at": "2026-09-26",
   "compiled_by_role": "AI Engineer",
-  "provenance_policy": "Every row records the public URL it was compiled from and a verification status. 'published' means the institution publishes this destination on at least one of its own properties. 'published_conflicting' means the institution publishes two or more different values for the same function, which is disclosed to the user rather than silently resolved. 'unverified' means it could not be confirmed against a published source and must be shown to the user with that caveat.",
+  "version_note": "1.1.0 adds the U-TRANSPORT unpublished topic and 23 plain-speech phrases to R-ICT-HELPDESK, both added after the evaluation sets were frozen and both written in response to observed failures. The frozen cases were not edited. See eval/CHANGELOG.md.",
+  "provenance_policy": "Every row records the public URL it was compiled from and a verification status, and the status is shown to the user rather than hidden. 'published' means the institution publishes this destination on at least one of its own properties. 'published_conflicting' means the institution publishes two or more different values for the same function, which is disclosed to the user rather than silently resolved. 'derived' means the destination was compiled by cross-referencing published routes and no single page states it, so it is shown with that caveat. An unconfirmed destination is never included as a row at all: an unverifiable email address is worse than an absent one, because the user has no way to tell the difference.",
   "verification_legend": {
     "published": "Confirmed on at least one institutional property.",
     "published_conflicting": "Confirmed, but the institution publishes conflicting values elsewhere. Both are shown.",

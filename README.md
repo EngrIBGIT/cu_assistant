@@ -74,9 +74,20 @@ implementation**. That is the difference between a measurement and a
 demonstration, and it is checkable:
 
 ```bash
-git log --format="%H %ad %s" --date=iso -- eval/
 python scripts/verify_integrity.py     # automated, also runs in CI
+git diff 8596c72 HEAD -- eval/*_set.json    # must print nothing
 ```
+
+The gate runs two independent checks, because one of them was found to be
+insufficient. It verifies that the sets *predate* the implementation, **and**
+that they are still byte-identical to their state at the freeze commit. The
+ordering check alone passed on a test set whose expected answers had been
+rewritten in a later commit — the exact failure the gate exists to prevent. See
+`eval/CHANGELOG.md` §4, which includes the attack and the fix.
+
+Changes made *in response to* observed failures are disclosed in
+`eval/CHANGELOG.md` with before/after numbers. The frozen cases themselves have
+never been edited, and the system was changed twice after the freeze.
 
 ### Results
 

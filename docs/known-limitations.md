@@ -37,8 +37,49 @@ recommendation quietly dropped because it was awkward.
 | Limitation | Measured effect | Threshold | Verdict |
 |---|---|---|---|
 | Lexical fallback routing | 0.98 against 1.00 | ≥ 0.90 | Met, with the gap documented |
+| Keyword-only baseline routing | 0.96 against 1.00 | not pre-registered | See §2.1 |
 | Strict primary route rate | 0.46 on the gold set | not pre-registered | See §3 |
 | Paraphrase strict primary rate | 0.00 | not pre-registered | See §3 |
+
+### 2.1 The keyword-only baseline reaches 0.96
+
+The honest reading of the headline numbers is that most of the routing work in
+this domain is lexical, and the neural component is not what makes it work.
+
+Run on the same frozen sets, with the neural embedder disabled:
+
+| System | gold | paraphrase | out_of_scope |
+|---|---|---|---|
+| Full (hybrid) | 50/50 | 20/20 | 15/15 |
+| TF-IDF lexical | 49/50 | 20/20 | 15/15 |
+| **Keyword baseline only** | **45/47** | **20/20** | **13/14** |
+
+The full system beats the keyword baseline by five cases on the gold set and one
+on out-of-scope. That is a real margin and it is not nothing, but it is a
+margin, not a transformation — and anyone reading "100%" as "this required
+embeddings" is reading more into it than the evidence supports.
+
+This is stated here rather than in a footnote because a reader who reaches the
+conclusion themselves and finds it contradicted later will trust nothing else in
+this document. The defensible claim is narrower than the one the number invites:
+*hybrid retrieval plus curated routing plus enforced abstention* reaches 1.00 on
+these sets, and the neural component contributes a measurable but modest share
+of that.
+
+Two factors make the baseline stronger than one might expect, and both are
+properties of this domain rather than general truths:
+
+- A university contact directory has **29 destinations with distinctive names**.
+  Most questions contain a token that appears in exactly one route label, so even
+  a single keyword hit is strong evidence. The IDF term in the hybrid score
+  exists precisely to exploit this.
+- The **out-of-scope set is scored on refusal correctness**, and a keyword
+  baseline refuses anything it cannot match. It does so for the wrong reason, but
+  the metric cannot tell the difference.
+
+The clearest demonstration of the first point is §2 of `eval/CHANGELOG.md`: the
+single most serious defect found in this project was a routing failure caused
+entirely by keyword statistics, and no embedding model would have caught it.
 
 ---
 
@@ -164,8 +205,9 @@ can be hosted independently today.
 | The University reorganises a page and a citation 404s | Medium | Per-page provenance makes it traceable; fix the `source_url` and re-commit. Do not edit quoted content without re-reading the page |
 | A published contact detail changes | Medium | The refresh pipeline would catch it. Until then, the `verification` field marks rows where the University publishes conflicting values |
 | The embedder model is withdrawn upstream | Low | The lexical fallback is a complete substitute at 0.98 routing accuracy |
-| A client data owner never materialises | High | The routing table is built from published evidence and every row carries its provenance. Unconfirmed rows are marked `unverified` in the UI rather than presented as authoritative |
-| The routing table's vocabulary drifts from how users actually ask | Medium | Evidenced. A paraphrased lockout question ("the machine will not let me in") matched nothing, because the table was written in institutional register. Fixing it was vocabulary work, not model work — and the same gap will appear for questions nobody has tested |
+| A client data owner never materialises | High | The routing table is built from published evidence and every row carries its provenance. A destination that cannot be confirmed against a published source is left out rather than included with a caveat: an unverifiable email address is worse than an absent one, because the user cannot tell the difference. Where a destination is compiled by cross-referencing rather than stated on one page, it is marked `derived` and the caveat is shown |
+| The routing table's vocabulary drifts from how users actually ask | Medium | Evidenced. A paraphrased lockout question ("the machine will not let me in") matched nothing, because the table was written in institutional register. Fixing it was vocabulary work, not model work, and it was disclosed as post-freeze tuning with before/after numbers in `eval/CHANGELOG.md` §1 — and the same gap will appear for questions nobody has tested |
+| The integrity gate is weakened or removed to make a build pass | Low | It is two independent checks, it exits nonzero, and CI runs it. It was also **found broken during development and silently passing on a tampered test set**; see `eval/CHANGELOG.md` §4. A gate is only worth what its ability to fail is worth, so the fix was demonstrated against a real attack rather than asserted. Anyone changing it should re-run that attack |
 
 That last row is the most important one. The 85 frozen cases are a sample of one
 organisation's real questions, not of the space of all questions. The system will
