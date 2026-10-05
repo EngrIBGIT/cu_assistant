@@ -326,7 +326,7 @@ of this returns the same figures - gold 50/50, paraphrase 20/20, out_of_scope
 15/15, groundedness 1.0000, violations 0, integrity PASS. None of these defects
 was reachable by the frozen sets, which is the point of section 6 restated for a
 third time: they score routing and groundedness, not whether the service is
-truthful about itself. The suite now stands at 145 tests, of which
+truthful about itself. The suite now stands at 152 tests, of which
 `tests/test_wording.py` and `tests/widget_dom_check.mjs` exist for these and
 nothing else. The widget check runs the real file against a small fake DOM,
 because a test that greps a script for a string proves the file was written and

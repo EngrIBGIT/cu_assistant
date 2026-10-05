@@ -135,7 +135,7 @@ Five checks, in order. Each one catches a failure the others do not.
 python scripts/verify_integrity.py
 
 # 2. Does the code still pass its own tests?
-python -m unittest discover -s tests -t .          # expect 145 tests, OK
+python -m unittest discover -s tests -t .          # expect 152 tests, OK
 
 # 3. Do the frozen sets still pass?
 python scripts/run_eval.py                         # expect 1.00 across all three

@@ -118,6 +118,31 @@ lexical_fallback` in every response and in `/api/health`, so a degraded run can
 never be mistaken for a full one. Measured cost of that degradation: routing
 accuracy 0.98 against 1.00, and 7 ms median latency against 53 ms.
 
+#### Use Python 3.12 for the neural embedder
+
+On Windows, the neural embedder needs PyTorch, and PyTorch does not currently
+load on Python 3.14. The oldest release published for `cp314` is 2.9.0, and
+2.9.0 introduced a DLL-initialisation failure on Windows that is still open at
+2.14.1 ([pytorch#166628](https://github.com/pytorch/pytorch/issues/166628),
+[#169429](https://github.com/pytorch/pytorch/issues/169429)). The fix everyone
+reports is 2.8.0, which has no `cp314` wheel. So `pip install -r requirements.txt`
+on 3.14 installs a torch that cannot be imported, and the failure surfaces as an
+`OSError` about `c10.dll` rather than as anything about Python versions.
+
+```bash
+py install 3.12
+py -3.12 -m venv .venv
+.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\pip install "torch==2.8.0" --index-url https://download.pytorch.org/whl/cpu
+```
+
+That last line is the one that matters: `requirements.txt` deliberately does not
+pin a torch version, and without it `pip` picks 2.14. `verify.yml` pins 3.12,
+which is why CI is green — the pin is load-bearing and did not look it.
+
+Nothing is lost if you skip all of this. The lexical fallback is a designed state,
+not a broken one, and CI runs the whole suite in lexical mode on purpose.
+
 ---
 
 ## Verifying the claims
@@ -190,7 +215,7 @@ The claim this repository makes is the narrower one that the evidence supports.
 ### Two independent configurations
 
 ```bash
- python -m unittest discover -s tests -t .    # 145 tests
+ python -m unittest discover -s tests -t .    # 152 tests
 python scripts/run_eval.py                   # neural embedder
 python scripts/run_eval.py --embedder lexical   # no model, degraded mode
 python scripts/run_eval.py --baseline-only   # keyword matcher alone
@@ -302,7 +327,7 @@ data/
   routing_table.json   29 destinations, 12 unpublished topics, per-row provenance
 eval/             The three frozen sets, and the results stamped with versions
 scripts/          Build the index, run the evaluation, verify the integrity gate
-tests/            145 tests. test_system.py needs no fixtures;
+tests/            152 tests. test_system.py needs no fixtures;
                   test_http.py exercises the served interface;
                   test_deployment.py checks the two-process split;
                   test_wording.py checks the service is truthful about itself,
