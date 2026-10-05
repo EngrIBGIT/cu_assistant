@@ -25,5 +25,5 @@ Email: info@cosmopolitan.edu.ng
 
 ## Note on credentials
 
-The assistant has no access to this portal and cannot read any applicant's
-status. It can only explain where the portal is and how to reach it.
+No applicant's status can be read from this page. Sign-in is required, and the
+page only explains where the portal is and how to sign in.

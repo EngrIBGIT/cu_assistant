@@ -49,5 +49,4 @@ Phone: +234 805 208 0828
 ## Not published on this page
 
 Application deadlines, entry requirements, application fee, and the number of
-programmes an applicant may list are not published here. The assistant must not
-supply any of these.
+programmes an applicant may list are not published here.

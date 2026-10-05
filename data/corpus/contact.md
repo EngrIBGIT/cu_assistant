@@ -44,7 +44,5 @@ own properties, and no page states which is canonical:
 Two different phone numbers are also published: +234 805 208 0828 and
 +234 806 559 0444.
 
-The assistant must surface this conflict when a user asks which address to use,
-rather than silently picking one and presenting it as settled. This is a
-deliberate design decision: presenting one address as authoritative would be a
-confident answer to a question the evidence does not support.
+Neither number is marked as the main switchboard, so which one to use is not
+settled by the published pages.

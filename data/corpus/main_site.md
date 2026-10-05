@@ -54,11 +54,10 @@ No single page states which property answers which question.
 ## IMPORTANT — /fees/tuition exists but its content is not retrievable
 
 A tuition fees route exists at /fees/tuition, but because the site is
-client-rendered its content could not be read at audit time. **No fee figure is
-therefore known to be published.** The assistant must state that it does not have
-the fee figure and route the user to Admissions, and must never supply an amount.
-A third-party site has begun publishing tuition figures for the university,
-which is evidence of the gap rather than a source to quote.
+client-rendered its content cannot be read from the page. **No fee figure is
+therefore known to be published.** A third-party site has begun publishing
+tuition figures for the university, but those are not the University's own
+published figures and are not treated as one.
 
 ## Institution
 

@@ -127,7 +127,20 @@ def _split_units(text: str) -> list[str]:
     for unit in units:
         if not buffer:
             buffer = unit
-        elif len(buffer) + len(unit) + 2 <= _MAX_CHARS:
+        elif len(buffer) + len(unit) + 2 <= _MAX_CHARS or len(unit) < _MIN_CHARS:
+            # A unit too short to stand alone is attached to its neighbour even
+            # if that carries the chunk past _MAX_CHARS. The alternative — a
+            # short unit becoming a chunk of its own — fragments a sentence from
+            # the paragraph it completes, and the cap is a retrieval heuristic
+            # while losing a published sentence is a defect.
+            #
+            # A 109-character sentence in the contact page ("Neither number is
+            # marked as the main switchboard...") sat one character under
+            # _MIN_CHARS and was being deleted from the corpus entirely, while
+            # ``test_no_content_is_lost_between_document_and_chunks`` asserted
+            # that no document can lose content. The two rules cannot both hold.
+            # Nothing in the corpus is now dropped: everything either stands
+            # alone or travels with the paragraph it belongs to.
             buffer = f"{buffer}\n\n{unit}"
         else:
             packed.append(buffer)
@@ -235,8 +248,6 @@ def load_corpus(corpus_dir: Path = CORPUS_DIR) -> Corpus:
         documents.append(document)
 
         for ordinal, unit in enumerate(_split_units(cleaned)):
-            if len(unit) < _MIN_CHARS and ordinal > 0:
-                continue
             cid = hashlib.sha1(
                 f"{source_url}#{ordinal}#{unit}".encode("utf-8")
             ).hexdigest()[:16]

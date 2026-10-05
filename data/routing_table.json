@@ -33,9 +33,30 @@
         "₦",
         "installment",
         "what will this cost",
-        "school fees"
+        "school fees",
+        "acceptance fee",
+        "registration fee",
+        "application fee",
+        "instalment",
+        "instalments",
+        "installments",
+        "pay in instalments",
+        "paid in instalments",
+        "in instalments",
+        "programme cost",
+        "program cost",
+        "cost of the programme",
+        "cost of the program",
+        "cost of tuition",
+        "fee amount",
+        "tuition amount",
+        "what does it cost",
+        "how much does",
+        "how much do i pay",
+        "boarding fees",
+        "is it free"
       ],
-      "note": "No fee figure is published on any page readable at audit time. /fees/tuition exists but is client-rendered and its content could not be read. Route to Admissions. Never state an amount.",
+      "note": "No fee figure is published on any page we can read. /fees/tuition exists but is client-rendered and its content could not be read. Contact Admissions for the figure.",
       "route_hints": [
         "R-FEES-ADMISSIONS"
       ],
@@ -58,9 +79,17 @@
         "admission close",
         "closes",
         "when does it close",
-        "application deadline"
+        "application deadline",
+        "when does the application close",
+        "is the application open",
+        "application still open",
+        "still accepting",
+        "accepting applications",
+        "what is the deadline",
+        "deadline for",
+        "closing date for"
       ],
-      "note": "Not published on any page readable at audit time.",
+      "note": "Not published on any page we can read.",
       "route_hints": [
         "R-ADM-HUB",
         "R-ADM-UG-APPLY",
@@ -87,9 +116,26 @@
         "o level",
         "ssce",
         "accepted",
-        "do you accept"
+        "do you accept",
+        "how many credits",
+        "what credits",
+        "credits do i need",
+        "do i need credits",
+        "minimum credits",
+        "o levels do i need",
+        "what o levels",
+        "do i need o levels",
+        "minimum o levels",
+        "what subjects do i need",
+        "what do i need to qualify",
+        "what qualification",
+        "qualification needed",
+        "requirements for admission",
+        "admission requirements",
+        "am i eligible",
+        "do i meet the requirements"
       ],
-      "note": "Not published on any page readable at audit time. Must not be inferred from any other university.",
+      "note": "Not published on any page we can read. Requirements are not inferred from other universities.",
       "route_hints": [
         "R-ADM-HUB",
         "R-ADM-UG-APPLY"
@@ -110,7 +156,7 @@
         "financial aid",
         "indigent"
       ],
-      "note": "Not published on any page readable at audit time.",
+      "note": "Not published on any page we can read.",
       "route_hints": [
         "R-ADM-HUB",
         "R-FEES-ADMISSIONS"
@@ -130,7 +176,7 @@
         "room",
         "residence"
       ],
-      "note": "Not published on any page readable at audit time. Route to the main office for the campus address.",
+      "note": "Not published on any page we can read. The main office can give the campus address.",
       "route_hints": [
         "R-ADDRESS",
         "R-FEES-ADMISSIONS"
@@ -171,7 +217,7 @@
         "when is the exam",
         "examination is on"
       ],
-      "note": "Not published. The academic calendar is a published service but its dates are not readable at audit time.",
+      "note": "Not published. The academic calendar is a published service but its dates cannot be read from the page.",
       "route_hints": [
         "R-ACADEMIC-CALENDAR"
       ],
@@ -217,7 +263,14 @@
         "how many programmes",
         "number of programmes",
         "how many courses",
-        "how many subjects"
+        "how many subjects",
+        "how long does",
+        "how long is",
+        "how long will",
+        "how long do",
+        "take to complete",
+        "takes to complete",
+        "how long will it take"
       ],
       "note": "Neither the length of a programme nor its start date is published, and the number of programmes an applicant may list is not stated.",
       "route_hints": [
@@ -448,7 +501,7 @@
         "application status",
         "check my application"
       ],
-      "notes": "The assistant cannot read any applicant's status. It explains where to check and how to sign in."
+      "notes": "Sign in to check a submitted application. No applicant's status is readable from the public pages."
     },
     {
       "route_id": "R-CERT-PROGRAMMES",
@@ -543,7 +596,7 @@
         "naira",
         "charging"
       ],
-      "notes": "CRITICAL. No fee figure is published on any page readable at audit time. This route exists so the assistant can be useful without inventing an amount. It must state that the figure is not published and route to Admissions."
+      "notes": "No fee figure is published on any page we can read, so this is the office that holds tuition and payment figures."
     },
     {
       "route_id": "R-ADM-EMAIL-UG",
@@ -565,7 +618,7 @@
         "contact admissions",
         "reach admissions"
       ],
-      "notes": "The contact-us page labels admissions@cosmopolitan.edu.ng as 'Undergraduate Admissions'. The admission portal publishes admission@cosmopolitan.edu.ng for the same function. Both must be shown with the conflict explained."
+      "notes": "The contact-us page labels admissions@cosmopolitan.edu.ng as 'Undergraduate Admissions'. The admission portal publishes admission@cosmopolitan.edu.ng for the same function. Both are shown with the conflict explained."
     },
     {
       "route_id": "R-ADM-EMAIL-PG",
@@ -764,7 +817,7 @@
         "timetable",
         "schedule"
       ],
-      "notes": "Listed as a quick-access service. Specific dates are not published and must not be stated."
+      "notes": "Listed as a quick-access service. Specific dates are not published."
     },
     {
       "route_id": "R-JOBS-PORTAL",
@@ -1014,7 +1067,7 @@
         "faculties",
         "see the list"
       ],
-      "notes": "The route exists but is client-rendered, so the list of programmes itself is not readable at audit time."
+      "notes": "The route exists but is client-rendered, so the list of programmes cannot be read from the page."
     },
     {
       "route_id": "R-PARTNERSHIPS",

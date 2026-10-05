@@ -39,6 +39,5 @@ Phone: +234 805 208 0828
 
 ## Borrowing
 
-Borrowing, reserving, and renewing are listed as library services. The assistant
-can tell a user which service applies and where to direct the request, but the
-library's own loan periods are not published and must not be stated.
+Borrowing, reserving, and renewing are listed as library services. The
+library's own loan periods are not published.

@@ -54,7 +54,7 @@ Businesses), CUCAIL (Artificial Intelligence for Law Practice), and CUCAR
 ## Not published
 
 Duration, tuition, entry requirements, and start dates for individual
-certificates are not published on this page. The assistant must not supply them.
+certificates are not published on this page.
 
 ## Address given on this page
 

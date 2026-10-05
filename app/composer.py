@@ -37,6 +37,42 @@ _SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9])")
 _CONTACT = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+|\+?\d[\d\s()+-]{7,}|https?://\S+")
 _LIST_ITEM = re.compile(r"^\s*([-*]|\d+\.)\s+")
 
+#: Spans that address the system rather than the reader.
+#:
+#: The corpus is written by the engineer who curates it, and the natural way to
+#: write a curation note is in the second person to the thing being built: "the
+#: assistant must not supply these", "this is a deliberate design decision". The
+#: extractive composer quotes verbatim and cannot tell an instruction from a
+#: fact, so those notes reached applicants as answers. A user asking what the
+#: acceptance fee is was served the sentence "The assistant must state that it
+#: does not have the fee figure and route the user to Admissions, and must never
+#: supply an amount." The fact next to it — that no fee figure is published — was
+#: the part that was ever meant to be read.
+#:
+#: This is the same class of defect as an ungrounded claim, and it is caught the
+#: same way. Grounding is enforced structurally here rather than trusted to the
+#: author, so authorship is enforced structurally too: the span is dropped
+#: whatever the corpus happens to say, and the property survives the next person
+#: to edit these files.
+_INTERNAL_NOTE = re.compile(
+    r"\bthe assistant\b"
+    r"|\b(?:must|shall|should) not (?:be |ever )?(?:state[ds]?|suppl\w+|infer\w*|quot\w*|guess\w*|invent\w*)\b"
+    r"|\b(?:must|shall|should) never\b"
+    # The same instruction without the "must", because the corpus contained
+    # "Never state an amount." as a bare sentence in a note that the fallback page
+    # renders verbatim. Requiring the modal made the filter look complete while
+    # the sentence it was written for sailed straight through.
+    r"|\bnever (?:state[ds]?|suppl\w+|infer\w*|quot\w*|guess\w*|invent\w*|estimate\w*|say)\b"
+    r"|\bdo not (?:state[ds]?|suppl\w+|infer\w*|quot\w*|guess\w*|invent\w*)\b"
+    r"|\bdeliberate design decision\b",
+    re.IGNORECASE,
+)
+
+
+def _is_internal(text: str) -> bool:
+    """True when a span is an instruction to the system, not information for a reader."""
+    return bool(_INTERNAL_NOTE.search(text))
+
 #: How many of the answer's spans may be reserved for enumerated content.
 #:
 #: One, deliberately. Two was tried and measurably harmful: the FIMS
@@ -143,6 +179,8 @@ class ExtractiveComposer:
         contributing: set[str] = set()
         for hit in hits:
             for sentence in _sentences(hit.chunk.text):
+                if _is_internal(sentence):
+                    continue
                 score = _salience(sentence, question, self._idf)
                 if score > 0.0:
                     chosen.append((score, sentence, hit.chunk.source_url))
@@ -278,7 +316,7 @@ class ExtractiveComposer:
                 if not block or not _LIST_ITEM.match(block):
                     continue
                 items = [line.strip().lstrip("-*").strip() for line in block.splitlines() if line.strip()]
-                items = [i for i in items if i]
+                items = [i for i in items if i and not _is_internal(i)]
                 if len(items) >= _LIST_MIN_ITEMS:
                     scored.append((strength, "; ".join(items), url))
 
@@ -303,10 +341,13 @@ class ExtractiveComposer:
             if not block or not _LIST_ITEM.match(block):
                 continue
             items = [line.strip().lstrip("-*").strip() for line in block.splitlines() if line.strip()]
-            items = [i for i in items if i]
+            items = [i for i in items if i and not _is_internal(i)]
             if items:
                 return "; ".join(items)
-        return spans[0]
+        for span in spans:
+            if not _is_internal(span):
+                return span
+        return ""
 
     @staticmethod
     def _present(sentence: str) -> str:
