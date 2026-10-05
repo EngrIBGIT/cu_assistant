@@ -32,6 +32,59 @@ LLM_API_KEY = os.getenv("CRA_LLM_API_KEY", "")
 LLM_TIMEOUT_S = float(os.getenv("CRA_LLM_TIMEOUT_S", "12"))
 LLM_MAX_TOKENS = int(os.getenv("CRA_LLM_MAX_TOKENS", "320"))
 
+# ---------------------------------------------------------------- deployment
+#
+# The service is one ASGI application, but it is deployed as two processes: a
+# JSON API and a server-rendered frontend. They are the same code with different
+# routes mounted, which is why a single-process deployment is still the default
+# and the split costs nothing when it is not wanted.
+#
+# The split exists because the two have genuinely different exposure. The API
+# takes untrusted text and returns JSON; the frontend serves the pages that
+# carry the security headers a browser actually reads, and it must reach the API
+# without a page reload to do it. Splitting them means the surface that renders
+# to a user can be hardened, rate-limited and put behind a cache without touching
+# the surface that is being called.
+
+#: Port the JSON API listens on.
+API_PORT = int(os.getenv("CRA_API_PORT", "8003"))
+
+#: Port the server-rendered frontend listens on.
+WEB_PORT = int(os.getenv("CRA_WEB_PORT", "5020"))
+
+#: Host both processes bind to. 127.0.0.1 rather than 0.0.0.0: the pair is a local
+#: or reverse-proxied deployment, and binding every interface by default would
+#: expose a read-only service that nobody asked to expose.
+BIND_HOST = os.getenv("CRA_BIND_HOST", "127.0.0.1")
+
+#: The URL a *browser* uses to reach the API. Different from the bind host when
+#: the API sits behind a proxy, a different hostname, or TLS termination, and the
+#: widget cannot be told the difference: it only knows the URL it was given.
+API_PUBLIC_URL = os.getenv("CRA_API_PUBLIC_URL", f"http://127.0.0.1:{API_PORT}").rstrip("/")
+
+#: The URL a *browser* uses to reach the frontend. Advertised in /api/health so
+#: that a running pair can be confirmed from either side.
+WEB_PUBLIC_URL = os.getenv("CRA_WEB_PUBLIC_URL", f"http://{BIND_HOST}:{WEB_PORT}").rstrip("/")
+
+#: Origins the API accepts browser requests from. The frontend is a separate
+#: origin from the API, so without this the widget is blocked by the same-origin
+#: policy the moment the pair is split. Scoped to an explicit list rather than
+#: "*": the API has no authentication, so an open CORS policy would let any site
+#: on the internet use this deployment as an oracle.
+ALLOWED_ORIGINS = tuple(
+    origin.strip()
+    for origin in os.getenv(
+        "CRA_ALLOWED_ORIGINS",
+        f"{WEB_PUBLIC_URL},http://localhost:{WEB_PORT},http://127.0.0.1:{WEB_PORT}",
+    ).split(",")
+    if origin.strip()
+)
+
+#: How long the frontend waits for the API before giving up. Short on purpose: a
+#: user waiting on a page render should be told the service is unavailable
+#: quickly, and the frontend never invents an answer to fill the gap.
+API_TIMEOUT_S = float(os.getenv("CRA_API_TIMEOUT_S", "20"))
+
 
 @dataclass(frozen=True)
 class Thresholds:
