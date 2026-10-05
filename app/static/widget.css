@@ -1,63 +1,149 @@
 /* CU Route Assistant widget styles.
- * Scoped under .cra-* so embedding this on a host page cannot restyle the host.
- * Colour pairs meet WCAG AA against their own backgrounds.
+ *
+ * Scoped under .cra-* so embedding this on a host page cannot restyle the host
+ * and the host cannot restyle the widget. Colour pairs meet WCAG AA against
+ * their own backgrounds, in both schemes.
+ *
+ * Two shapes, one file. The same markup is mounted either inline, inside a
+ * .cra-root element the host page provides, or as a floating launcher plus
+ * panel. The difference is confined to the container: the conversation, the
+ * route block and the sources look identical in both, so a visitor who meets
+ * the floating widget on one page and the inline one on another is not looking
+ * at two different products.
+ *
+ * Visual language: the Academic Institutional system used by the server-rendered
+ * page. Flat white modules on a #F6F8FA canvas, separated by 1px #E2E8F0 rules
+ * rather than by shadow; 4px on controls, 8px on cards. Every shadow in this
+ * file is a popover, which is the one elevation the system grants one to. Fully
+ * rounded pills are deliberately absent — the destinations here are institutional
+ * records, and a pill reads as a consumer app.
+ *
+ * The font stack names Source Sans 3 first so an institution that installs it
+ * locally gets the intended face, and falls back to the platform UI font when it
+ * is absent. There is no @font-face and no font request: a widget that adds a
+ * megabyte of network to a third party's page is not one tag.
+ *
+ * The muted grey is #5C6A77 rather than the #64748B the design system names,
+ * for the same reason as on the server-rendered page: #64748B measures 4.47:1 on
+ * the #F6F8FA conversation canvas, which is where the route block's field labels
+ * sit, and that is under AA. #5C6A77 measures 5.21:1 there.
  */
+
+.cra-root,
+.cra-panel {
+  box-sizing: border-box;
+  color: var(--cra-ink, #1f2937);
+  font: 400 15px/1.55 "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+}
+.cra-root *,
+.cra-panel * { box-sizing: border-box; }
+.cra-root h2, .cra-root h3, .cra-root h4,
+.cra-panel h2, .cra-panel h3, .cra-panel h4 { letter-spacing: -.01em; }
+.cra-root p, .cra-panel p { max-width: 68ch; }
+
+/* ---- containers ---------------------------------------------------------- */
+
+.cra-panel {
+  position: fixed;
+  right: 16px;
+  bottom: 76px;
+  z-index: 2147483001;
+  width: min(400px, calc(100vw - 32px));
+  height: min(580px, calc(100vh - 124px));
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #2c3a47;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(44, 58, 71, .06), 0 1px 2px rgba(44, 58, 71, .04),
+    0 18px 40px rgba(44, 58, 71, .18);
+  overflow: hidden;
+}
+.cra-panel[hidden] { display: none; }
+
+.cra-root {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
 
 .cra-launcher {
   position: fixed;
   right: 16px;
   bottom: 16px;
   z-index: 2147483000;
-  padding: 12px 20px;
-  border: 0;
-  border-radius: 999px;
+  padding: 13px 20px;
+  border: 1px solid #0b5d3b;
+  border-radius: 4px;
   background: #0b5d3b;
   color: #fff;
-  font: 600 15px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font: 600 14px/1.1 "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: .01em;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, .25);
+  box-shadow: 0 2px 4px rgba(44, 58, 71, .06), 0 1px 2px rgba(44, 58, 71, .04),
+    0 8px 20px rgba(44, 58, 71, .18);
 }
-.cra-launcher:hover { background: #094a2e; }
-.cra-launcher:focus-visible { outline: 3px solid #b8560f; outline-offset: 2px; }
+.cra-launcher:hover { background: #08492e; border-color: #08492e; }
+.cra-launcher:focus-visible,
+.cra-close:focus-visible,
+.cra-send:focus-visible,
+.cra-chip:focus-visible { outline: 2px solid #0b5d3b; outline-offset: 2px; }
 
-.cra-panel {
-  position: fixed;
-  right: 16px;
-  bottom: 72px;
-  z-index: 2147483001;
-  width: min(400px, calc(100vw - 32px));
-  height: min(560px, calc(100vh - 120px));
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  color: #16202b;
-  border: 1px solid #d5dee6;
-  border-radius: 10px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, .22);
-  font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  overflow: hidden;
-}
-.cra-panel[hidden] { display: none; }
+/* ---- header -------------------------------------------------------------- */
 
 .cra-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   padding: 12px 14px;
-  background: #0b5d3b;
-  color: #fff;
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+  color: #1f2937;
 }
-.cra-head h3 { margin: 0; font-size: 15px; }
+.cra-title { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: #2c3a47; }
+.cra-panel .cra-title { font-size: 14px; }
 .cra-close {
   border: 0;
   background: transparent;
-  color: #fff;
+  color: #5c6a77;
   font-size: 24px;
   line-height: 1;
   cursor: pointer;
   padding: 0 4px;
 }
-.cra-close:focus-visible { outline: 3px solid #ffd166; }
+.cra-close:hover { color: #2c3a47; }
+
+/* ---- suggestion chips ---------------------------------------------------- */
+
+.cra-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 11px 12px;
+  background: #f6f8fa;
+  border-bottom: 1px solid #e2e8f0;
+}
+.cra-chip {
+  padding: 6px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #fff;
+  color: #0b5d3b;
+  font: 600 12px/1.35 "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: .01em;
+  cursor: pointer;
+}
+.cra-chip:hover { background: #eff6f1; border-color: #0b5d3b; }
+
+/* ---- conversation -------------------------------------------------------- */
 
 .cra-log {
   flex: 1;
@@ -65,92 +151,174 @@
   padding: 14px;
   background: #f6f8fa;
 }
+.cra-root .cra-log { max-height: 26rem; }
+
 .cra-msg { margin: 0 0 10px; }
-.cra-bot p { margin: 0 0 6px; }
+.cra-msg p { margin: 0 0 6px; }
+.cra-msg p:last-child { margin-bottom: 0; }
+.cra-list { margin: 0 0 6px; padding-left: 20px; }
+.cra-list li { margin: 0 0 3px; }
+
 .cra-user {
   background: #0b5d3b;
   color: #fff;
-  padding: 8px 11px;
-  border-radius: 10px 10px 2px 10px;
-  margin-left: 34px;
+  padding: 9px 12px;
+  border-radius: 4px;
+  margin-left: 32px;
+  overflow-wrap: anywhere;
 }
 .cra-answer {
   background: #fff;
-  border: 1px solid #d5dee6;
-  border-radius: 10px 10px 10px 2px;
-  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 14px;
+  overflow-wrap: anywhere;
 }
+.cra-error { background: #fffbeb; border-left: 3px solid #8a4b00; color: #5c3200;
+  border-radius: 0 4px 4px 0; padding: 12px 14px; }
 
-.cra-route {
-  margin-top: 10px;
-  padding: 10px;
-  background: #eef6f1;
-  border-left: 3px solid #0b5d3b;
-  border-radius: 0 6px 6px 0;
-}
-.cra-route-label { margin: 0 0 6px; font-size: 14px; }
-.cra-dl { margin: 0; }
-.cra-dl dt {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .03em;
-  color: #5a6b7b;
-  margin-top: 6px;
-}
-.cra-dl dt:first-child { margin-top: 0; }
-.cra-dl dd { margin: 1px 0 0; }
-.cra-dl a { word-break: break-all; }
-
-.cra-warn {
-  margin: 8px 0 0;
+/* The reason there is no answer, phrased to match the reason. Shown above the
+   answer text so it reads as a status rather than as part of the reply. */
+.cra-status-note {
+  margin: 0 0 10px;
   padding: 8px 10px;
-  background: #fff6e6;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
   border-left: 3px solid #8a4b00;
   border-radius: 0 4px 4px 0;
   font-size: 13px;
   color: #5c3200;
 }
-.cra-src { display: inline-block; margin-top: 8px; font-size: 12px; }
 
-.cra-cites { margin-top: 10px; border-top: 1px solid #d5dee6; padding-top: 8px; }
-.cra-cites h4 { margin: 0 0 4px; font-size: 12px; text-transform: uppercase; color: #5a6b7b; }
+/* ---- routed destination -------------------------------------------------- */
+
+.cra-route {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f6f8fa;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid #0b5d3b;
+  border-radius: 4px;
+}
+.cra-route-label { margin: 0 0 8px; font-size: 15px; font-weight: 600; color: #2c3a47; }
+.cra-dl { margin: 0; }
+.cra-dl dt {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: #5c6a77;
+  margin-top: 8px;
+}
+.cra-dl dt:first-child { margin-top: 0; }
+.cra-dl dd { margin: 2px 0 0; }
+.cra-dl a { word-break: break-all; }
+
+/* An office, room or extension is a record, not a sentence, so it is set in a
+   monospaced face the way the design system specifies for machine-readable
+   values. The stack is local-only: a widget must not fetch a font. */
+.cra-dl dd {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+  font-size: 13px;
+}
+
+.cra-warn {
+  margin: 10px 0 0;
+  padding: 9px 10px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 3px solid #8a4b00;
+  border-radius: 0 4px 4px 0;
+  font-size: 13px;
+  color: #5c3200;
+}
+.cra-src { display: inline-block; margin-top: 9px; font-size: 12px; }
+
+.cra-cites { margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 10px; }
+.cra-cites h4 { margin: 0 0 5px; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .05em; color: #5c6a77; }
 .cra-cites ul { margin: 0; padding-left: 18px; font-size: 13px; }
-.cra-when { color: #5a6b7b; }
+.cra-when { color: #5c6a77; }
 
-.cra-alt { margin-top: 8px; font-size: 13px; }
-.cra-alt summary { cursor: pointer; color: #0b5d3b; }
+.cra-alt { margin-top: 10px; font-size: 13px; }
+.cra-alt summary { cursor: pointer; color: #0b5d3b; font-weight: 600; }
 
-.cra-status { margin: 0; padding: 0 14px; font-size: 13px; color: #5a6b7b; min-height: 18px; }
+.cra-hint { margin: 0; padding: 0 14px; font-size: 13px; color: #5c6a77; min-height: 18px; }
+.cra-root .cra-hint { padding: 8px 14px 0; }
+
+/* ---- composer ------------------------------------------------------------ */
 
 .cra-form {
   display: flex;
   gap: 8px;
   padding: 10px;
-  border-top: 1px solid #d5dee6;
+  border-top: 1px solid #e2e8f0;
   background: #fff;
 }
 .cra-input {
   flex: 1;
   min-width: 0;
-  padding: 10px;
-  border: 1px solid #a9bacb;
-  border-radius: 6px;
+  padding: 10px 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
   font: inherit;
+  color: #1f2937;
+  background: #fff;
 }
-.cra-input:focus-visible { outline: 3px solid #b8560f; outline-offset: 1px; }
+.cra-input::placeholder { color: #5c6a77; }
+.cra-input:focus-visible { outline: 2px solid #0b5d3b; outline-offset: 1px; }
 .cra-send {
-  padding: 10px 16px;
-  border: 0;
-  border-radius: 6px;
+  padding: 10px 18px;
+  border: 1px solid #0b5d3b;
+  border-radius: 4px;
   background: #0b5d3b;
   color: #fff;
-  font: 600 15px/1 inherit;
+  font: 600 14px/1 inherit;
   cursor: pointer;
 }
-.cra-send:disabled { background: #7d8f9c; cursor: progress; }
-.cra-send:focus-visible { outline: 3px solid #b8560f; outline-offset: 2px; }
+.cra-send:hover { background: #08492e; }
+.cra-send:disabled { background: #7d8f9c; border-color: #7d8f9c; cursor: progress; }
+
+/* ---- dark scheme --------------------------------------------------------- */
+
+@media (prefers-color-scheme: dark) {
+  .cra-root,
+  .cra-panel { --cra-ink: #e8eef3; color: #e8eef3; }
+  .cra-root,
+  .cra-panel { background: #141c24; border-color: #2c3a47; }
+  .cra-head { background: #141c24; border-color: #2c3a47; color: #e8eef3; }
+  .cra-title { color: #e8eef3; }
+  .cra-close { color: #9fb0bf; }
+  .cra-close:hover { color: #e8eef3; }
+  .cra-answer { background: #141c24; border-color: #2c3a47; }
+  .cra-log { background: #0f151b; }
+  .cra-suggest { background: #141c24; border-color: #2c3a47; }
+  .cra-chip { background: #1b242e; border-color: #3a4b5a; color: #8dd6ab; }
+  .cra-chip:hover { background: #22303c; }
+  .cra-user { background: #0b5d3b; color: #fff; }
+  .cra-route { background: #10241b; border-color: #2c3a47; border-left-color: #2fa36a; }
+  .cra-route-label { color: #e8eef3; }
+  .cra-form { background: #141c24; border-color: #2c3a47; }
+  .cra-status-note,
+  .cra-warn { background: #2b1f0c; border-color: #6b4a1c; border-left-color: #e0a458;
+    color: #f4d9b0; }
+  .cra-error { background: #2b1f0c; border-left-color: #e0a458; color: #f4d9b0; }
+  .cra-dl dt,
+  .cra-cites h4,
+  .cra-when,
+  .cra-hint { color: #9fb0bf; }
+  .cra-cites { border-color: #2c3a47; }
+  .cra-alt summary,
+  .cra-src { color: #8dd6ab; }
+  .cra-input { background: #0f151b; border-color: #3a4b5a; color: #e8eef3; }
+  .cra-input::placeholder { color: #9fb0bf; }
+  .cra-send { background: #0b5d3b; border-color: #2fa36a; color: #fff; }
+  .cra-send:hover { background: #0f7a4e; }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .cra-panel, .cra-launcher { transition: none !important; }
+  .cra-panel,
+  .cra-launcher,
+  .cra-chip { transition: none !important; }
 }
