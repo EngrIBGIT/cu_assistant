@@ -160,6 +160,178 @@ python scripts/verify_integrity.py   # must exit 1
 git checkout -- eval/gold_set.json
 ```
 
+## 5. Four defects found by using the running service
+
+Found by starting the application, asking it the questions a real applicant would
+ask, and reading the bytes it sent back. None of the four is visible in the
+scores, which is the point: this round is the third instance of the pattern in
+item 3, and the largest one yet.
+
+| defect | what a user got |
+|---|---|
+| internal authoring notes in the corpus and routing table | "The assistant must never state an amount" quoted as if it were information about fees |
+| gap questions phrased without the catalogue's exact words | a confident answer to a fee or entry-requirement question the University does not publish |
+| no security headers, asserted as a control in `docs/operations.md` | none set, on any response |
+| 422 responses echoing the submitted value | the whole 20 KB question returned in the error body |
+
+**The score did not move, and that is reported as a finding rather than a
+reassurance.** The abstention gate matched on vocabulary the frozen cases happened
+to use, so it scored 1.0000 while answering "Is there an acceptance fee?" instead
+of refusing it. The fixes below touch no frozen case, and the numbers are
+identical before and after:
+
+| system | gold | paraphrase | out_of_scope | groundedness | violations |
+|---|---|---|---|---|---|
+| before | 50/50 | 20/20 | 15/15 | 1.0000 | 0 |
+| after | 50/50 | 20/20 | 15/15 | 1.0000 | 0 |
+
+Keyword-only baseline, unchanged on both sides: 0.9574 / 1.0000 / 0.9286.
+
+**What did change measurably is the corpus: 28 chunks became 25.** Six corpus
+files carried a paragraph written as an instruction to the system rather than as
+information for a reader, and one routing-table note was rendered verbatim by the
+fallback page. Those paragraphs were removed, not reworded, which is why the
+chunk count falls. Every published fact they sat next to was kept, and
+`tests/test_regressions.py` asserts both halves: that the facts survive and that
+the instructions do not.
+
+**The threshold was not lowered.** The abstention gate scores a match phrase
+worth 2 against `min_hits: 2`, so "Is there an acceptance fee?" matched on *fee*
+alone. Adding the phrases real users type — *acceptance fee*, *in instalments*,
+*still open*, *credits*, *how long* — is the same class of change as fix 1, and
+carries the same disclosure obligation. It is disclosed here for that reason, and
+the 12 questions that exposed it are in the regression suite rather than in a
+frozen file, because a frozen file is not the right place for a case authored
+after the freeze.
+
+**One further defect was found in the chunker while fixing the first.** A
+paragraph shorter than `_MIN_CHARS` (110) that was not the first in its document
+was dropped from the corpus entirely. A 109-character published sentence — "Neither
+number is marked as the main switchboard…" — sat one character under the
+threshold and was being deleted, while
+`test_no_content_is_lost_between_document_and_chunks` asserted that no document
+can lose content. The two rules contradicted each other and only the test caught
+it. Short units are now attached to the paragraph they complete rather than
+discarded; corpus-wide, units dropped: **1 before, 0 after**.
+
+## 6. The deployment was one process serving two roles
+
+Found while running the service rather than by reading the documentation, which
+is the same way §5 happened. `README.md` and the `/` page banner both claimed the
+front page was "the assistant, with the widget". It was not: the page served
+`/widget.js` for third parties to embed and mentioned the widget in prose, but
+loaded no script of its own, so the headline journey was the server-rendered
+directory and nothing else. The claim was false in a way a user would have
+discovered in one second, and the widget existed only as an asset.
+
+**No evaluation case measured this**, because the frozen sets are a JSON API and
+a decision path, not a browser. That is worth stating plainly: the sets score the
+assistant's honesty about the University, and nothing in them would ever notice
+that the page advertising the assistant did not run it. `tests/test_deployment.py`
+does.
+
+**The fix.** `/` now loads `/widget-config.js` then `/widget.js`, both
+same-origin. The API's location is served as a file rather than set by an inline
+`<script>` so that `script-src` can stay `'self'` with no `unsafe-inline`.
+
+**The deployment change that came with it.** The service is now two processes on
+the ports it was specified for: the API on `8003`, which owns the assistant, and
+the frontend on `5020`, which owns the pages and calls the API for answers. The
+frontend does not import the pipeline, so it never loads torch — 37.9 MB resident
+against the API's 94.8 MB, and no ~25 second cold start.
+
+**Effect on the scores: none.** The frozen sets are unchanged and re-run after
+the split returns the same figures — gold 50/50, paraphrase 20/20,
+out_of_scope 15/15, groundedness 1.0000, violations 0, integrity PASS. The
+no-JavaScript page now reaches the assistant over HTTP instead of in-process,
+which is a new way for it to be wrong, so `tests/test_deployment.py` asserts that
+the answer rendered on the page is the answer the API returns for the same
+question, and that a failed call is reported as an outage rather than rendered as
+a refusal. `app.api:app` still serves everything on one port, and is what the
+rest of the suite exercises.
+
+## 7. The service said things that were not true of it
+
+Found by using the running service rather than by reading the code, and found in
+the same way as 5 and 6: each of these is invisible to a test that asks *which
+route came back* and completely visible to a person reading the screen.
+
+**A greeting was answered as an unpublished topic.** `hi` was not recognised as
+small talk, so it fell through to the abstain gate and was told "Not published.
+The University does not publish this on any page this assistant can read, so it
+is not guessed at." Nothing had been asked, and the sentence is a claim about the
+University's published pages. A greeting now gets an orientation reply saying
+what the service is for and what it will decline to invent, and it is still
+recorded as `abstained` with no citations, so it cannot be counted as an answer.
+That last part is the reason the change is safe: `app/orientation.py` matches the
+whole normalised question, never a substring, and
+`test_no_frozen_case_is_a_greeting` holds the matcher against all 15 frozen
+out-of-scope cases. Nine real questions containing "hi", "hello" or "thanks" are
+held in `tests/test_wording.py` so the same mistake is not made in the other
+direction, by discarding "hi, my portal is not working" as small talk.
+
+**One wording served every abstention.** The same sentence claimed non-publication
+for a safety refusal, which is a different claim: refusing to help someone break
+into an account has nothing to do with what the University has published. Reasons
+are now matched to wording - unpublished, safety, outside the domain, nothing
+retrieved - and a greeting gets no status line at all, because a status line
+explains a failure and this is not one. Frozen case X15, "What is the weather in
+Abuja tomorrow?", was the clearest symptom and it had been scoring as a correct
+refusal throughout.
+
+**The API process answered `/` with `{"detail": "Not Found"}`.** Correct, in the
+same way that a door with no handle is a door. It is also the first thing anyone
+opening port 8003 sees, now that there are two ports. It serves a short notice
+naming the API, its documentation, its health check and the frontend instead. The
+frontend's `/docs` and `/openapi.json` go the other way and are now `404`: they
+were serving a Swagger page listing zero endpoints, which invites a reader to
+call an API that lives on the other port.
+
+**Three early returns reported `mode="full"` whatever the deployment was doing.**
+A greeting, a safety refusal and an unpublished-topic reply all claimed a language
+model had been used. In this environment none is configured, and the honest value
+is `retrieval_only`, so `/api/ask` was reporting a capability the service did not
+have. The three now call the same `_mode()` the answer path uses. This surfaced
+only because the greeting test asserted on the reported mode.
+
+**The widget did not ship its own stylesheet.** An embedder that included one
+`<script>` tag got an unstyled wall of divs: the launcher rendered as plain text
+and the panel was invisible. A widget that needs the host to know what else to
+link is not one tag, it is two. The script now injects its own stylesheet
+relative to *its own* URL - read at execution time, because
+`document.currentScript` is null by the time `DOMContentLoaded` fires, which was
+the first version's bug and would have 404'd the CSS for any third-party embedder.
+
+**The widget's answer renderer ignored lists.** There were two nearly identical
+message renderers; the one used for API answers had no list handling while the one
+used for the opening message did. So the greeting - the first thing anyone sees -
+displayed its own `- ` dashes on the widget after the server-rendered page had
+already been fixed. They are now one function.
+
+**On the page, `**bold**` was rendered and `_italic_` was not**, so a user read
+"…before you rely on them._" with the underscores on screen next to the source
+citation, which reads as a fault in a page whose whole claim is that its sources
+can be checked. Both are rendered now, and the trailing disclaimer is dropped
+from the answer because the page already states it in full in the note above the
+directory - a strip that had been written to match the word "disclaimer", which
+the disclaimer text does not contain, and so had never fired.
+
+**A block that began with a dash stayed a paragraph.** The list pattern required a
+line of prose before the first bullet, which is the exact shape of the greeting.
+The greeting listed its own capabilities with visible dashes on the page while
+claiming to be a list.
+
+**Effect on the scores: none.** The frozen sets are unchanged and re-run after all
+of this returns the same figures - gold 50/50, paraphrase 20/20, out_of_scope
+15/15, groundedness 1.0000, violations 0, integrity PASS. None of these defects
+was reachable by the frozen sets, which is the point of section 6 restated for a
+third time: they score routing and groundedness, not whether the service is
+truthful about itself. The suite now stands at 145 tests, of which
+`tests/test_wording.py` and `tests/widget_dom_check.mjs` exist for these and
+nothing else. The widget check runs the real file against a small fake DOM,
+because a test that greps a script for a string proves the file was written and
+not that it works - and that gap is what hid the list bug above.
+
 ## Verifying this file
 
 ```bash
