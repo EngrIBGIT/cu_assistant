@@ -134,7 +134,7 @@ so a reader can tell a decision from an oversight.
 | Image or document understanding | Unnecessary for routing, and it would require accepting uploads — a privacy surface the project has no reason to open |
 | Live FIMS or portal API integration | Introduces authentication, rate-limit, and availability risk for zero added user value |
 | A native mobile app | A script tag covers the need at a fraction of the cost |
-| A vector index | Premature at 28 chunks. Brute-force search over the whole corpus is exact, and an index is a v2 step |
+| A vector index | Premature at 25 chunks. Brute-force search over the whole corpus is exact, and an index is a v2 step |
 | Accounts, profiles, analytics dashboards | Every one is a privacy surface with no corresponding user benefit |
 | Any write action | Removes an entire class of harm. The assistant advises; it does not submit anything |
 
@@ -189,6 +189,31 @@ shared store, and the honest position is that this would need replacing rather
 than that the current implementation is adequate at scale. Stated here instead of
 hidden behind an in-memory list that looks like more than it is.
 
+The split into two processes did add one thing to think about here. The frontend
+forwards the visitor's address as `X-Forwarded-For` so that the API limits per
+person rather than treating every page render as one shared caller. The API
+honours that header only from a trusted peer, so this works for the loopback
+deployment the project targets and would need a real proxy configuration behind a
+reverse proxy. An untrusted `X-Forwarded-For` is ignored rather than believed,
+which means a misconfigured reverse proxy degrades to a shared bucket rather than
+to no limit at all. That is the right way round.
+
+### The two processes have to be started together
+
+The frontend serves its directory immediately and does not need the API to do
+that, so a frontend that is up with no API behind it looks healthy. Its health is
+not something you can read from the frontend, because the frontend has no health
+endpoint: it has no assistant to report on. `/api/health` on port `8003` is the
+only place the pair's state is visible, and it reports the two ports so a
+misconfigured pair is visible in the first request.
+
+In practice this means the API must be started first, and a rolling restart
+briefly shows `Service unavailable` in the answer box. The page reports that as an
+outage and keeps the question in the box, rather than rendering it as a refusal:
+"the service is down" and "the University does not publish this" are different
+claims, and only one of them is true. `app.api:app` remains available as a
+single process for deployments that would rather not manage two.
+
 ### Widget placement on the client's properties
 
 The widget is one `<script>` tag and is ready to embed, but embedding it across
@@ -209,11 +234,15 @@ can be hosted independently today.
 | The routing table's vocabulary drifts from how users actually ask | Medium | Evidenced. A paraphrased lockout question ("the machine will not let me in") matched nothing, because the table was written in institutional register. Fixing it was vocabulary work, not model work, and it was disclosed as post-freeze tuning with before/after numbers in `eval/CHANGELOG.md` §1 — and the same gap will appear for questions nobody has tested |
 | The integrity gate is weakened or removed to make a build pass | Low | It is two independent checks, it exits nonzero, and CI runs it. It was also **found broken during development and silently passing on a tampered test set**; see `eval/CHANGELOG.md` §4. A gate is only worth what its ability to fail is worth, so the fix was demonstrated against a real attack rather than asserted. Anyone changing it should re-run that attack |
 
-That last row is the most important one. The 85 frozen cases are a sample of one
-organisation's real questions, not of the space of all questions. The system will
-be confidently unhelpful on phrasings nobody thought to test, and the mitigation
-is not a better model — it is noticing the failures when real users hit them,
-which is why the in-product feedback control exists.
+That last row is the most important one, and it has now been observed rather than
+predicted. The 85 frozen cases are a sample of one organisation's real questions,
+not of the space of all questions. Twelve questions found by using the running
+service — "Is there an acceptance fee?", "Can I pay in instalments?", "What
+O-level subjects do I need?" — were answered confidently while every frozen score
+read 1.0000. The vocabulary is now broader and the twelve are in the regression
+suite, but the mitigation is not a longer word list: it is noticing failures when
+real users hit them, which is why the in-product feedback control exists. Expect
+the same class of failure to reappear under a different vocabulary.
 
 ---
 
@@ -224,6 +253,7 @@ Stated so the numbers are not read as more than they are.
 | Not covered | Why |
 |---|---|
 | Real users | The 85 cases are authored, not observed. They are frozen and pre-registered, which protects them from being fitted to the result, but it does not make them representative |
+| Phrasing outside the frozen vocabulary | The abstention gate scores match terms, and the 85 cases happened to use wording close to the ones the catalogue knew. Live testing found twelve real fee and entry-requirement questions — *acceptance fee*, *in instalments*, *still open*, *credits* — answered confidently where the frozen score was 1.0000. The fixes are disclosed in `eval/CHANGELOG.md` §5, and the scores did not move, which is exactly why they could not have been relied on to find it |
 | Task-completion improvement | The plan specifies 10 testers × 3 routing tasks, with and without the assistant. Not yet run. Until it is, the claim "this is faster than the current website" is unevidenced |
 | Screen-reader and keyboard testing | The design targets WCAG AA and semantic HTML, and the no-JavaScript path exists specifically because the audit found the University's own site excludes these users. Formal testing with actual assistive technology has not been performed |
 | Adversarial input at scale | The safety gate has test cases. It has not been fuzzed, and the read-only no-auth design limits what an attacker can reach regardless |

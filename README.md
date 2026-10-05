@@ -38,14 +38,40 @@ python -m venv .venv && .venv\Scripts\activate     # Windows
 # source .venv/bin/activate                          # macOS / Linux
 pip install -r requirements.txt
 
-uvicorn app.api:app --reload
+# two processes: the API on 8003, the frontend on 5020
+uvicorn app.api:backend_app  --port 8003     # terminal 1
+uvicorn app.api:frontend_app --port 5020     # terminal 2
 ```
 
-Then open <http://127.0.0.1:8000/>.
+Then open <http://127.0.0.1:5020/>. The API is at
+<http://127.0.0.1:8003/>; its health check is
+<http://127.0.0.1:8003/api/health>, which reports both ports so you can tell at a
+glance whether the pair came up as specified.
+
+For a single process instead, `uvicorn app.api:app --reload` serves everything on
+one port. That is still supported and is what the test suite exercises.
+
+The split exists for one reason: the frontend does not need the assistant to
+render its pages, and loading it anyway costs about 57 MB of resident memory and
+roughly 25 seconds of cold start. Measured on this machine, the frontend process
+resides at 37.9 MB and answers immediately, while the API process resides at
+94.8 MB. A test asserts that serving a page imports neither `torch` nor
+`sentence_transformers`, so the saving cannot be lost quietly.
 
 That page works with JavaScript disabled. It is not a degraded error state — it
 carries the whole primary journey, and it is the interface the audit says most
 people need.
+
+Both `/` and `/fallback` answer questions as well as list them. The question box
+is a plain `GET` form, so it works with scripting off, and it calls the same
+`Assistant.ask` as the widget and the API. It used to be a directory you could
+browse but not ask, which made the sentence above half true; the regression
+suite now asserts that the answer rendered on the page is the answer the API
+returns for the same question, so the two cannot drift apart silently. When the
+API is unreachable the page says the service is unavailable and keeps the
+question in the box — it never renders a refusal in place of an outage, because
+"the service is down" and "the University does not publish this" are different
+claims and only one of them is true.
 
 | Route | What it is |
 |---|---|
@@ -55,7 +81,34 @@ people need.
 | `/api/routes` | The routing table as data, so any page can render a directory without this service |
 | `/api/health` | Build state, active embedder, degradation status |
 | `/api/privacy` | Machine-readable statement of the data this service handles |
-| `/docs` | OpenAPI UI |
+| `/docs` | OpenAPI UI, on the API process only |
+
+`/docs` and `/openapi.json` are `404` on the frontend. They are FastAPI's defaults
+and the frontend mounts no routes, so they served a Swagger page listing zero
+endpoints — a page inviting a reader to call an API that lives on the other port.
+On the API process, `/` is a short notice naming the API, its docs, its health
+check and the frontend; it used to be `{"detail": "Not Found"}`, which is correct
+in the same way that a door with no handle is a door.
+
+### Embedding the widget
+
+One script tag, on any page:
+
+```html
+<script src="https://your-host/widget.js" defer></script>
+```
+
+That is the whole integration. The script loads its own stylesheet relative to its
+own URL, mounts inline if the page provides `<div id="cra-root">` and as a floating
+launcher otherwise, and posts to `window.CU_ROUTE_API` — served by this service as
+`/widget-config.js` so that `script-src` can stay `'self'` with no `unsafe-inline`.
+To point it at a different API host, set `window.CU_ROUTE_API` before the tag and
+add that origin to the CORS allow-list.
+
+The styling, the mounting, the keyboard behaviour and the failure message are all
+covered by `tests/widget_dom_check.mjs`, which runs the real file against a small
+fake DOM. A test that greps a script for a string proves the file was written, not
+that it works.
 
 ### No model download? It still runs.
 
@@ -137,7 +190,7 @@ The claim this repository makes is the narrower one that the evidence supports.
 ### Two independent configurations
 
 ```bash
- python -m unittest discover -s tests -t .    # 56 tests
+ python -m unittest discover -s tests -t .    # 145 tests
 python scripts/run_eval.py                   # neural embedder
 python scripts/run_eval.py --embedder lexical   # no model, degraded mode
 python scripts/run_eval.py --baseline-only   # keyword matcher alone
@@ -181,7 +234,7 @@ know, rather than dressing a weak match up as an answer.
 | Decision | Rationale |
 |---|---|
 | RAG, no fine-tuning | No training data exists, and grounding becomes inspectable |
-| Brute-force search, no vector index | An index is premature at 28 chunks; documented as a v2 step |
+| Brute-force search, no vector index | An index is premature at 25 chunks; documented as a v2 step |
 | SQLite-free, in-memory index | No database server to operate |
 | Extractive by default | A composer that cannot write cannot hallucinate |
 | Model optional | The product works at demo time with the model down; degradation is a designed state |
@@ -207,9 +260,27 @@ Stated as commitments, and each one is checkable rather than asserted:
 anyone reading a policy page.
 
 Security controls: input length limits, a fixed-window rate limiter, TLS in
-transit, and a safety gate that refuses unauthorised-access and
-academic-integrity requests *before* retrieval, so a harmful request never
-becomes context a generator might paraphrase.
+transit, a safety gate that refuses unauthorised-access and academic-integrity
+requests *before* retrieval, so a harmful request never becomes context a
+generator might paraphrase, and a set of response security headers —
+`Content-Security-Policy`, `X-Content-Type-Options`, `X-Frame-Options`,
+`Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security` — set by
+`app/api.py` on every response including errors.
+
+The CSP is `script-src 'self'` with no `unsafe-inline` and no `unsafe-eval`,
+which holds because the widget builds its DOM with `createElement` and
+`textContent` rather than innerHTML. `style-src` does allow `'unsafe-inline'`, a
+real and accepted relaxation: `/fallback` carries its stylesheet in a `<style>`
+block so the no-JavaScript page needs no second request. TLS remains the
+deployment's responsibility, and `Strict-Transport-Security` is inert when served
+over plain HTTP.
+
+Rejected questions are answered with a 422 that names the field, the location and
+the reason but **not the value**. Pydantic attaches the submitted input to every
+validation error it raises, so a 20 KB over-length question used to come back
+inside the error body — larger than any answer the service gives, and handed to
+whatever intermediary logged the response. The value is the part the caller
+already has.
 
 ---
 
@@ -231,8 +302,11 @@ data/
   routing_table.json   29 destinations, 12 unpublished topics, per-row provenance
 eval/             The three frozen sets, and the results stamped with versions
 scripts/          Build the index, run the evaluation, verify the integrity gate
-tests/            56 tests. test_system.py needs no fixtures;
-                  test_http.py exercises the served interface
+tests/            145 tests. test_system.py needs no fixtures;
+                  test_http.py exercises the served interface;
+                  test_deployment.py checks the two-process split;
+                  test_wording.py checks the service is truthful about itself,
+                  and runs the widget against a fake DOM via node
 docs/             Architecture, operations, limitations, attribution
 ```
 
