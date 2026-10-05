@@ -141,8 +141,8 @@ has would be a lie told in the one document whose entire job is accuracy.
 ## 7. AI tools used in producing this work
 
 Disclosed as required by the project guidelines. Any generative AI used as a
-learning or production aid is named here, its output was verified, and the
-submitting member remains accountable for the result.
+learning or production aid is named here, its output was verified, and the team
+remains accountable for the result.
 
 | Tool | Used for | Verification |
 |---|---|---|

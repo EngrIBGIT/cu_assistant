@@ -350,7 +350,7 @@ docs/             Architecture, operations, limitations, attribution
 
 ## Project context
 
-An AI capstone by a team of eleven, for Cosmopolitan University, Abuja, under the
+An AI capstone by a team, for Cosmopolitan University, Abuja, under the
 AIPIL / IDEAS programme. The problem was chosen from an audit of the
 University's public web presence rather than assigned, and the scope was
 deliberately narrowed to a single user task — *find the correct route and contact
