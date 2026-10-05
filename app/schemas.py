@@ -11,7 +11,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-Intent = Literal["answer", "route", "refuse", "unsafe"]
+Intent = Literal["answer", "route", "refuse", "unsafe", "conversational"]
 Grounding = Literal["grounded", "partial", "abstained"]
 
 

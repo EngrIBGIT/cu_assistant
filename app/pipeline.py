@@ -44,6 +44,7 @@ from .config import EMBEDDER, settings, thresholds as T
 from .embeddings import tokenize
 from .ingest import Corpus, load_corpus, load_routing_table
 from .llm import LLMClient
+from .orientation import conversational_reply
 from .retriever import Retriever
 from .router import Router, phrase_matches as _phrase_matches
 from .safety import screen
@@ -318,8 +319,40 @@ class Assistant:
         if self.embedder_note:
             trace["embedder_note"] = self.embedder_note
 
-        # 1. Safety ---------------------------------------------------------
+        # 0. Conversational -------------------------------------------------
+        # A greeting is not an unanswerable question. Left on the normal path it
+        # reaches the abstain gate and is answered "the University does not
+        # publish this", which is a false statement about a message that was
+        # never asking for a fact. Intercepted here, and still recorded as
+        # abstained with no citations, so it cannot be counted as an answer.
+        chat = conversational_reply(question)
+        if chat:
+            body, kind = chat
+            return AskResponse(
+                question=question,
+                answer=f"{body}\n\n_{settings.disclaimer}_",
+                intent="conversational",
+                grounding="abstained",
+                abstained=True,
+                abstention_reason=f"conversational: {kind}",
+                primary_route=None,
+                also_consider=[],
+                citations=[],
+                trace={
+                    **trace,
+                    "gate": "conversational",
+                    "kind": kind,
+                    "latency_ms": int((time.perf_counter() - started) * 1000),
+                },
+                disclaimer=settings.disclaimer,
+                mode=self._mode(),
+                version=settings.version,
+            )
+
+        # 1. Safety --------------------------------------------------------
+
         verdict = screen(question)
+
         if verdict.refused:
             route = None
             if verdict.redirect_route_hint:
@@ -341,7 +374,7 @@ class Assistant:
                 citations=[],
                 trace={**trace, "gate": "safety", "latency_ms": int((time.perf_counter() - started) * 1000)},
                 disclaimer=settings.disclaimer,
-                mode="full",
+                mode=self._mode(),
                 version=settings.version,
             )
 
@@ -393,7 +426,7 @@ class Assistant:
                     "latency_ms": int((time.perf_counter() - started) * 1000),
                 },
                 disclaimer=settings.disclaimer,
-                mode="full",
+                mode=self._mode(),
                 version=settings.version,
             )
 
