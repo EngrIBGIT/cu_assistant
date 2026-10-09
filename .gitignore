@@ -1,5 +1,6 @@
 # frozen pre-registered evaluation evidence
 eval/*.result.json
+eval/results*.json
 eval/*/results/
 
 # python
