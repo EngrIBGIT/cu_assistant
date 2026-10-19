@@ -135,7 +135,7 @@ Five checks, in order. Each one catches a failure the others do not.
 python scripts/verify_integrity.py
 
 # 2. Does the code still pass its own tests?
-python -m unittest discover -s tests -t .          # expect 152 tests, OK
+python -m unittest discover -s tests -t .          # expect 173 tests, OK
 
 # 3. Do the frozen sets still pass?
 python scripts/run_eval.py                         # expect 1.00 across all three
@@ -268,21 +268,38 @@ python scripts/build_index.py
 The manifest is written to `var/`, which is git-ignored, because it is a
 regenerated artefact and a stale one in version control is misleading.
 
-### The refresh pipeline is specified, not built
+### The refresh pipeline: parse, diff, report, queue
 
-The plan calls for automated snapshot, diff, delta report, and a human approval
-queue. What exists today is the manual version of the last step: a person reads
-a page, curates it to Markdown, and commits it with a fresh `retrieved_at`.
+`scripts/refresh_corpus.py` compares a proposed snapshot of curated pages against
+the committed corpus and writes a delta report and an approval queue:
 
-The automation is a v2 item, and `docs/known-limitations.md` records it as
-missing rather than describing it in the present tense.
+```bash
+python scripts/refresh_corpus.py --snapshot path/to/proposed-pages
+python scripts/refresh_corpus.py --snapshot snapshots/2026-12-01 --max-age-days 60
+```
 
-**The provenance fields are what make it safe to do later.** Every page records
-when it was retrieved and whether the University published it consistently. A
-change-detection job can compare a fresh snapshot against the recorded state and
-produce a diff a human approves, without the system ever writing to the corpus on
-its own. A pipeline that can silently rewrite what the assistant asserts is a
-pipeline that can make it wrong in a way nobody notices.
+Each page is classified as **added**, **removed**, **content changed**, or
+**metadata changed** — the last being a page re-read and confirmed unchanged,
+which is the common case and is not a silent no-op. Pages older than the age
+threshold are listed as **stale**, and a page whose `retrieved_at` cannot be
+parsed is listed as *freshness unconfirmed* rather than assumed current. Output
+is written under `var/refresh/<timestamp>/`: `delta.txt` for a person,
+`delta.json` for a tool, and `approval_queue.json`, whose every item is
+`pending`. `var/` is git-ignored, so these are working artefacts, not evidence.
+
+**Nothing is applied automatically, and that is the design.** The pipeline is
+read-only: it never writes to `data/corpus`. A human reviews each pending item,
+reads the cited page, edits the corpus by hand, and commits. Snapshotting is
+manual for the same reason curation is: a person decides what is worth quoting,
+which is what keeps this from becoming a scraper. The comparison and the queue
+are automated; the decision is a person. A pipeline that can silently rewrite
+what the assistant asserts is a pipeline that can make it wrong in a way nobody
+notices.
+
+**The provenance fields are what make the rest safe to automate later.** Every
+page records when it was retrieved and whether the University published it
+consistently, so a future change-detection job has a recorded state to compare
+against without the system ever writing to its own corpus on its own.
 
 ---
 

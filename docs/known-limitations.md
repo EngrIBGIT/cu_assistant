@@ -140,25 +140,34 @@ so a reader can tell a decision from an oversight.
 
 ---
 
-## 5. Genuinely missing
+## 5. Missing or incomplete
 
-Not excluded by choice. Not yet built.
+Not excluded by choice. What follows is either not built or not finished, and it
+is written in the present tense of the code rather than of the plan.
 
 ### The corpus refresh pipeline
 
-The plan specifies automated snapshot, diff, delta report, and a human approval
-queue. What exists is the manual version: a person reads a page, curates it to
-Markdown, and commits it with a fresh `retrieval` date.
+The plan specifies four steps: snapshot, diff, delta report, and a human approval
+queue. Two are built. `scripts/refresh_corpus.py` compares a proposed snapshot of
+curated pages against the committed corpus, classifies each page as added,
+removed, content changed, or metadata only, lists pages older than a configurable
+age, and writes a delta report and an approval queue in which every item is
+`pending`.
+
+**What is still missing is the first step and the last, and both are missing on
+purpose.** Snapshotting remains manual — a person reads a page and curates it to
+Markdown — because that curation is the judgement recorded in
+`docs/architecture.md` as the reason this is not a scraper. Approval is manual
+too: the pipeline is read-only by construction and never writes to `data/corpus`,
+so a human resolves each pending item by editing the corpus and committing. A
+pipeline that can silently rewrite what the assistant asserts is a pipeline that
+can make it wrong invisibly, so the write step is a person.
 
 **Why it matters.** The corpus is a snapshot of 26 September 2026 and will
 diverge from reality. A stale assistant answering confidently is worse than one
 admitting it does not know, because the user has no way to detect the staleness.
-
-**What makes it safe to build.** Every page records when it was retrieved and
-whether the University published it consistently. A refresh job can compare a
-fresh snapshot against the recorded state and produce a diff for approval, without
-the system ever writing to its own corpus. A pipeline that can silently rewrite
-what the assistant asserts is a pipeline that can make it wrong invisibly.
+The refresh report now puts that divergence, and the age of each page, in front
+of a reviewer rather than leaving it to be remembered.
 
 ### ONNX Runtime embeddings
 
@@ -228,7 +237,7 @@ can be hosted independently today.
 | Risk | Likelihood | Response if it happens |
 |---|---|---|
 | The University reorganises a page and a citation 404s | Medium | Per-page provenance makes it traceable; fix the `source_url` and re-commit. Do not edit quoted content without re-reading the page |
-| A published contact detail changes | Medium | The refresh pipeline would catch it. Until then, the `verification` field marks rows where the University publishes conflicting values |
+| A published contact detail changes | Medium | A refresh run against a fresh snapshot surfaces it for approval. Until then, the `verification` field marks rows where the University publishes conflicting values |
 | The embedder model is withdrawn upstream | Low | The lexical fallback is a complete substitute at 0.98 routing accuracy |
 | A client data owner never materialises | High | The routing table is built from published evidence and every row carries its provenance. A destination that cannot be confirmed against a published source is left out rather than included with a caveat: an unverifiable email address is worse than an absent one, because the user cannot tell the difference. Where a destination is compiled by cross-referencing rather than stated on one page, it is marked `derived` and the caveat is shown |
 | The routing table's vocabulary drifts from how users actually ask | Medium | Evidenced. A paraphrased lockout question ("the machine will not let me in") matched nothing, because the table was written in institutional register. Fixing it was vocabulary work, not model work, and it was disclosed as post-freeze tuning with before/after numbers in `eval/CHANGELOG.md` §1 — and the same gap will appear for questions nobody has tested |

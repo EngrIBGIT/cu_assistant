@@ -302,6 +302,13 @@ response carries the retrieval date and the verification status, so a user can
 see how current a fact is and whether the University published it once or
 publishes it inconsistently.
 
+It also makes the corpus refreshable without being rewritable. A snapshot is a
+directory in the same format; `app/refresh.py` classifies every page against the
+committed corpus and `scripts/refresh_corpus.py` writes the delta and a queue of
+pending decisions. Neither writes to `data/corpus`, so the only way a page
+changes is a person editing it and committing, and the retrieval date is what
+records that the page was re-read at all.
+
 ### The routing table
 
 29 destinations, each with an office, an entry point, contact details, opening

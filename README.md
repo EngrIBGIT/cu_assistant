@@ -215,7 +215,7 @@ The claim this repository makes is the narrower one that the evidence supports.
 ### Two independent configurations
 
 ```bash
- python -m unittest discover -s tests -t .    # 152 tests
+ python -m unittest discover -s tests -t .    # 173 tests
 python scripts/run_eval.py                   # neural embedder
 python scripts/run_eval.py --embedder lexical   # no model, degraded mode
 python scripts/run_eval.py --baseline-only   # keyword matcher alone
@@ -326,10 +326,12 @@ data/
   corpus/         12 curated pages, with retrieval date and verification per page
   routing_table.json   29 destinations, 12 unpublished topics, per-row provenance
 eval/             The three frozen sets, and the results stamped with versions
-scripts/          Build the index, run the evaluation, verify the integrity gate
-tests/            152 tests. test_system.py needs no fixtures;
+scripts/          Build the index, run the evaluation, verify the integrity gate,
+                  and diff a proposed corpus refresh against the committed corpus
+tests/            173 tests. test_system.py needs no fixtures;
                   test_http.py exercises the served interface;
                   test_deployment.py checks the two-process split;
+                  test_refresh.py checks the corpus refresh never writes;
                   test_wording.py checks the service is truthful about itself,
                   and runs the widget against a fake DOM via node
 docs/             Architecture, operations, limitations, attribution
