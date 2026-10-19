@@ -1,7 +1,7 @@
 {
   "run": {
     "tag": "",
-    "at": "2026-10-09T06:20:00",
+    "at": "2026-10-19T23:25:39",
     "prompt_version": "1.0.0",
     "routing_table_version": "1.1.0",
     "embedder": "minilm-l6-v2",
@@ -27,7 +27,7 @@
         "https://www.films.cosmopolitan.edu.ng/"
       ]
     },
-    "build_ms": 35161
+    "build_ms": 22343
   },
   "sets": {
     "gold": {
@@ -40,8 +40,8 @@
         "strict_primary_rate": 0.46,
         "abstentions": 8,
         "violations": 0,
-        "p50_latency_ms": 63,
-        "elapsed_ms": 2964
+        "p50_latency_ms": 72,
+        "elapsed_ms": 3620
       },
       "records": [
         {
@@ -69,7 +69,7 @@
             "https://admission.cosmopolitan.edu.ng/",
             "https://certificates.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 99
+          "latency_ms": 155
         },
         {
           "passed": true,
@@ -96,7 +96,7 @@
             "https://admission.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 51
+          "latency_ms": 98
         },
         {
           "passed": true,
@@ -124,7 +124,7 @@
             "https://www.cosmopolitan.edu.ng/",
             "https://ug.admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 71
+          "latency_ms": 105
         },
         {
           "passed": true,
@@ -147,7 +147,7 @@
           "citations": [
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 21
+          "latency_ms": 39
         },
         {
           "passed": true,
@@ -170,7 +170,7 @@
           "citations": [
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 24
+          "latency_ms": 30
         },
         {
           "passed": true,
@@ -200,7 +200,7 @@
             "https://ug.admission.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 63
+          "latency_ms": 91
         },
         {
           "passed": true,
@@ -223,7 +223,7 @@
           "citations": [
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 23
+          "latency_ms": 31
         },
         {
           "passed": true,
@@ -250,7 +250,7 @@
             "https://admission.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 60
+          "latency_ms": 91
         },
         {
           "passed": true,
@@ -277,7 +277,7 @@
             "https://admission.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 57
+          "latency_ms": 81
         },
         {
           "passed": true,
@@ -305,7 +305,7 @@
             "https://www.cosmopolitan.edu.ng/services/ict",
             "https://certificates.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 75
+          "latency_ms": 108
         },
         {
           "passed": true,
@@ -334,7 +334,7 @@
             "https://www.cosmopolitan.edu.ng/services/ict",
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 56
+          "latency_ms": 82
         },
         {
           "passed": true,
@@ -362,7 +362,7 @@
             "https://admission.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 68
+          "latency_ms": 88
         },
         {
           "passed": true,
@@ -390,7 +390,7 @@
           "citations": [
             "https://certificates.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 69
+          "latency_ms": 91
         },
         {
           "passed": true,
@@ -419,7 +419,7 @@
             "https://certificates.cosmopolitan.edu.ng/",
             "https://ccsa.cosmopolitan.edu.ng/contact"
           ],
-          "latency_ms": 59
+          "latency_ms": 78
         },
         {
           "passed": true,
@@ -442,7 +442,7 @@
           "citations": [
             "https://certificates.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 20
+          "latency_ms": 28
         },
         {
           "passed": true,
@@ -469,7 +469,7 @@
             "https://ug.admission.cosmopolitan.edu.ng/",
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 64
+          "latency_ms": 88
         },
         {
           "passed": true,
@@ -496,7 +496,7 @@
             "https://ug.admission.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 67
+          "latency_ms": 86
         },
         {
           "passed": true,
@@ -524,7 +524,7 @@
             "https://www.cosmopolitan.edu.ng/contact-us",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 59
+          "latency_ms": 80
         },
         {
           "passed": true,
@@ -551,7 +551,7 @@
             "https://admission.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 54
+          "latency_ms": 75
         },
         {
           "passed": true,
@@ -574,7 +574,7 @@
           "citations": [
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 21
+          "latency_ms": 27
         },
         {
           "passed": true,
@@ -597,7 +597,7 @@
           "citations": [
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 16
+          "latency_ms": 28
         },
         {
           "passed": true,
@@ -620,7 +620,7 @@
           "citations": [
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 17
+          "latency_ms": 23
         },
         {
           "passed": true,
@@ -648,7 +648,7 @@
             "https://www.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 75
+          "latency_ms": 68
         },
         {
           "passed": true,
@@ -675,7 +675,7 @@
             "https://www.cosmopolitan.edu.ng/services/ict",
             "https://www.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 72
+          "latency_ms": 71
         },
         {
           "passed": true,
@@ -701,7 +701,7 @@
             "https://ug.admission.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 56
+          "latency_ms": 60
         },
         {
           "passed": true,
@@ -729,7 +729,7 @@
             "https://ccsa.cosmopolitan.edu.ng/contact",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 59
+          "latency_ms": 62
         },
         {
           "passed": true,
@@ -757,7 +757,7 @@
             "https://apply.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 76
+          "latency_ms": 79
         },
         {
           "passed": true,
@@ -784,7 +784,7 @@
             "https://www.cosmopolitan.edu.ng/services/ict",
             "https://www.cosmopolitan.edu.ng/services/library"
           ],
-          "latency_ms": 64
+          "latency_ms": 73
         },
         {
           "passed": true,
@@ -811,7 +811,7 @@
             "https://www.cosmopolitan.edu.ng/services/ict",
             "https://www.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 73
+          "latency_ms": 63
         },
         {
           "passed": true,
@@ -838,7 +838,7 @@
             "https://www.cosmopolitan.edu.ng/services/ict",
             "https://www.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 65
+          "latency_ms": 70
         },
         {
           "passed": true,
@@ -863,7 +863,7 @@
           "citations": [
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 56
+          "latency_ms": 63
         },
         {
           "passed": true,
@@ -889,7 +889,7 @@
             "https://www.cosmopolitan.edu.ng/services/library",
             "https://www.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 80
+          "latency_ms": 75
         },
         {
           "passed": true,
@@ -916,7 +916,7 @@
             "https://www.cosmopolitan.edu.ng/services/library",
             "https://www.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 76
+          "latency_ms": 80
         },
         {
           "passed": true,
@@ -945,7 +945,7 @@
             "https://www.cosmopolitan.edu.ng/services/ict",
             "https://www.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 74
+          "latency_ms": 70
         },
         {
           "passed": true,
@@ -972,7 +972,7 @@
             "https://www.cosmopolitan.edu.ng/contact-us",
             "https://ug.admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 59
+          "latency_ms": 55
         },
         {
           "passed": true,
@@ -1001,7 +1001,7 @@
             "https://www.cosmopolitan.edu.ng/contact-us",
             "https://www.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 62
+          "latency_ms": 71
         },
         {
           "passed": true,
@@ -1031,7 +1031,7 @@
             "https://www.cosmopolitan.edu.ng/services/ict",
             "https://www.cosmopolitan.edu.ng/services/library"
           ],
-          "latency_ms": 49
+          "latency_ms": 67
         },
         {
           "passed": true,
@@ -1058,7 +1058,7 @@
           "citations": [
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 63
+          "latency_ms": 67
         },
         {
           "passed": true,
@@ -1085,7 +1085,7 @@
           "citations": [
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 66
+          "latency_ms": 61
         },
         {
           "passed": true,
@@ -1113,7 +1113,7 @@
             "https://www.cosmopolitan.edu.ng/",
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 54
+          "latency_ms": 68
         },
         {
           "passed": true,
@@ -1142,7 +1142,7 @@
             "https://admission.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 77
+          "latency_ms": 89
         },
         {
           "passed": true,
@@ -1171,7 +1171,7 @@
             "https://www.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 66
+          "latency_ms": 98
         },
         {
           "passed": true,
@@ -1197,7 +1197,7 @@
           "citations": [
             "https://fims.cosmopolitan.edu.ng/docs"
           ],
-          "latency_ms": 69
+          "latency_ms": 127
         },
         {
           "passed": true,
@@ -1224,7 +1224,7 @@
           "citations": [
             "https://fims.cosmopolitan.edu.ng/docs"
           ],
-          "latency_ms": 66
+          "latency_ms": 63
         },
         {
           "passed": true,
@@ -1254,7 +1254,7 @@
             "https://fims.cosmopolitan.edu.ng/docs",
             "https://ccsa.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 73
+          "latency_ms": 76
         },
         {
           "passed": true,
@@ -1284,7 +1284,7 @@
             "https://fims.cosmopolitan.edu.ng/docs",
             "https://ccsa.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 64
+          "latency_ms": 72
         },
         {
           "passed": true,
@@ -1311,7 +1311,7 @@
             "https://www.films.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 59
+          "latency_ms": 64
         },
         {
           "passed": true,
@@ -1337,7 +1337,7 @@
           "citations": [
             "https://apply.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 62
+          "latency_ms": 63
         },
         {
           "passed": true,
@@ -1366,7 +1366,7 @@
             "https://certificates.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 70
+          "latency_ms": 79
         },
         {
           "passed": true,
@@ -1389,7 +1389,7 @@
           "citations": [
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 24
+          "latency_ms": 20
         }
       ]
     },
@@ -1403,8 +1403,8 @@
         "strict_primary_rate": 0.0,
         "abstentions": 1,
         "violations": 0,
-        "p50_latency_ms": 69,
-        "elapsed_ms": 1425
+        "p50_latency_ms": 115,
+        "elapsed_ms": 2178
       },
       "records": [
         {
@@ -1435,7 +1435,7 @@
             "https://ug.admission.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 81
+          "latency_ms": 80
         },
         {
           "passed": true,
@@ -1464,7 +1464,7 @@
             "https://www.cosmopolitan.edu.ng/services/ict",
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 66
+          "latency_ms": 67
         },
         {
           "passed": true,
@@ -1493,7 +1493,7 @@
             "https://apply.cosmopolitan.edu.ng/",
             "https://certificates.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 75
+          "latency_ms": 65
         },
         {
           "passed": true,
@@ -1521,7 +1521,7 @@
             "https://www.cosmopolitan.edu.ng/services/ict",
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 77
+          "latency_ms": 70
         },
         {
           "passed": true,
@@ -1547,7 +1547,7 @@
             "https://ug.admission.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 64
+          "latency_ms": 53
         },
         {
           "passed": true,
@@ -1574,7 +1574,7 @@
             "https://fims.cosmopolitan.edu.ng/docs",
             "https://ug.admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 83
+          "latency_ms": 58
         },
         {
           "passed": true,
@@ -1599,7 +1599,7 @@
           "citations": [
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 73
+          "latency_ms": 85
         },
         {
           "passed": true,
@@ -1630,7 +1630,7 @@
             "https://www.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 60
+          "latency_ms": 161
         },
         {
           "passed": true,
@@ -1658,7 +1658,7 @@
             "https://admission.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 72
+          "latency_ms": 127
         },
         {
           "passed": true,
@@ -1686,7 +1686,7 @@
             "https://www.cosmopolitan.edu.ng/services/ict",
             "https://www.cosmopolitan.edu.ng/services/library"
           ],
-          "latency_ms": 57
+          "latency_ms": 112
         },
         {
           "passed": true,
@@ -1716,7 +1716,7 @@
             "https://certificates.cosmopolitan.edu.ng/",
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 79
+          "latency_ms": 148
         },
         {
           "passed": true,
@@ -1745,7 +1745,7 @@
             "https://www.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 69
+          "latency_ms": 115
         },
         {
           "passed": true,
@@ -1771,7 +1771,7 @@
             "https://www.cosmopolitan.edu.ng/services/library",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 141
+          "latency_ms": 127
         },
         {
           "passed": true,
@@ -1797,7 +1797,7 @@
             "https://www.cosmopolitan.edu.ng/contact-us",
             "https://ug.admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 66
+          "latency_ms": 130
         },
         {
           "passed": true,
@@ -1822,7 +1822,7 @@
           "citations": [
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 55
+          "latency_ms": 194
         },
         {
           "passed": true,
@@ -1853,7 +1853,7 @@
             "https://certificates.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 77
+          "latency_ms": 170
         },
         {
           "passed": true,
@@ -1882,7 +1882,7 @@
             "https://ccsa.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 67
+          "latency_ms": 119
         },
         {
           "passed": true,
@@ -1907,7 +1907,7 @@
           "citations": [
             "https://www.films.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 63
+          "latency_ms": 108
         },
         {
           "passed": true,
@@ -1934,7 +1934,7 @@
             "https://admission.cosmopolitan.edu.ng/",
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 66
+          "latency_ms": 135
         },
         {
           "passed": true,
@@ -1959,7 +1959,7 @@
           "citations": [
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 20
+          "latency_ms": 39
         }
       ]
     },
@@ -1973,8 +1973,8 @@
         "strict_primary_rate": 0.0,
         "abstentions": 15,
         "violations": 0,
-        "p50_latency_ms": 21,
-        "elapsed_ms": 352
+        "p50_latency_ms": 31,
+        "elapsed_ms": 467
       },
       "records": [
         {
@@ -1998,7 +1998,7 @@
           "citations": [
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 17
+          "latency_ms": 35
         },
         {
           "passed": true,
@@ -2021,7 +2021,7 @@
           "citations": [
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 24
+          "latency_ms": 36
         },
         {
           "passed": true,
@@ -2044,7 +2044,7 @@
           "citations": [
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 24
+          "latency_ms": 41
         },
         {
           "passed": true,
@@ -2067,7 +2067,7 @@
           "citations": [
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 22
+          "latency_ms": 36
         },
         {
           "passed": true,
@@ -2090,7 +2090,7 @@
           "citations": [
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 26
+          "latency_ms": 28
         },
         {
           "passed": true,
@@ -2113,7 +2113,7 @@
           "citations": [
             "https://www.cosmopolitan.edu.ng/about-us"
           ],
-          "latency_ms": 21
+          "latency_ms": 27
         },
         {
           "passed": true,
@@ -2136,7 +2136,7 @@
           "citations": [
             "https://www.cosmopolitan.edu.ng/about-us"
           ],
-          "latency_ms": 20
+          "latency_ms": 32
         },
         {
           "passed": true,
@@ -2159,7 +2159,7 @@
           "citations": [
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 21
+          "latency_ms": 36
         },
         {
           "passed": true,
@@ -2182,7 +2182,7 @@
           "citations": [
             "https://student.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 19
+          "latency_ms": 30
         },
         {
           "passed": true,
@@ -2205,7 +2205,7 @@
           "citations": [
             "https://www.cosmopolitan.edu.ng/services/ict"
           ],
-          "latency_ms": 22
+          "latency_ms": 31
         },
         {
           "passed": true,
@@ -2228,7 +2228,7 @@
           "citations": [
             "https://admission.cosmopolitan.edu.ng/"
           ],
-          "latency_ms": 21
+          "latency_ms": 28
         },
         {
           "passed": true,
@@ -2251,7 +2251,7 @@
           "citations": [
             "https://www.cosmopolitan.edu.ng/contact-us"
           ],
-          "latency_ms": 21
+          "latency_ms": 28
         },
         {
           "passed": true,
@@ -2311,7 +2311,7 @@
           "abstention_reason": "outside domain: weather",
           "top_routes": [],
           "citations": [],
-          "latency_ms": 85
+          "latency_ms": 70
         }
       ]
     }

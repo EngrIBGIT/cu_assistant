@@ -116,7 +116,7 @@ The neural embedder is a 90 MB download on first use. Without it the system
 falls back to a pure-NumPy lexical embedder and reports `mode:
 lexical_fallback` in every response and in `/api/health`, so a degraded run can
 never be mistaken for a full one. Measured cost of that degradation: routing
-accuracy 0.98 against 1.00, and 7 ms median latency against 53 ms.
+accuracy 0.98 against 1.00, and 7 ms median latency against 72 ms.
 
 #### Use Python 3.12 for the neural embedder
 

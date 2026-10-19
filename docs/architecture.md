@@ -369,7 +369,7 @@ error path:
 
 | Configuration | `mode` | Measured routing accuracy | Latency |
 |---|---|---|---|
-| Neural embedder | `full` | 1.00 | 53 ms p50 |
+| Neural embedder | `full` | 1.00 | 72 ms p50 |
 | Lexical embedder | `lexical_fallback` | 0.98 | 7 ms p50 |
 | No model configured | `retrieval_only` | as above | as above |
 
